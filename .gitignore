@@ -1,0 +1,17 @@
+# Pastas do Maven
+/target/
+
+# Pastas do NetBeans e IDEs
+/nbproject/
+/build/
+/dist/
+.nb-gradle/
+.nb-maven/
+.settings/
+.classpath
+.project
+.metadata/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
