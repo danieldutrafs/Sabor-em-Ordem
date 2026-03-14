@@ -11,7 +11,7 @@ CREATE TABLE produtos (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nome_produto VARCHAR(50) NOT NULL,
     quantidade INT NOT NULL,
-    categoria_id BIGINT, -- Corrigido para BIGINT
+    categoria_id BIGINT,
     preco DOUBLE NOT NULL,
     CONSTRAINT fk_categoria FOREIGN KEY (categoria_id) REFERENCES categoria(id)
 );
@@ -49,7 +49,7 @@ CREATE TABLE itens_venda (
 
 CREATE TABLE movimentacao_estoque (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    tipo ENUM('entrada','saída') NOT NULL,
+    tipo VARCHAR(20) NOT NULL,
     quantidade INT NOT NULL,
     produto_id BIGINT NOT NULL,
     CONSTRAINT fk_movimentacao_produto FOREIGN KEY (produto_id) REFERENCES produtos(id)

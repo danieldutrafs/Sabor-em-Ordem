@@ -54,4 +54,5 @@
             </plugin>
         </plugins>
     </build>
+    <name>SaborEmOrdem</name>
 </project>

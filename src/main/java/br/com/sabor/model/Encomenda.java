@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Entity
-@Table(name = "vendas")
+@Table(name = "encomenda")
 public class Encomenda {
     
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "cliente_id") // Relacionamento, não @Column!
     private Clientes cliente;
@@ -33,7 +33,11 @@ public class Encomenda {
     @Column (name = "forma_pagamento")
     private String formaPagamento;
 
-    public Encomenda(int id, Clientes cliente, List<ItemEncomenda> listaItens, LocalDate dataEntrega, String status, double valorEntrada, double frete, String destinatario, String endereco, boolean isRetirada, String formaPagamento) {
+    public Encomenda(){
+       
+    }
+    
+    public Encomenda(int Long, Clientes cliente, List<ItemEncomenda> listaItens, LocalDate dataEntrega, String status, double valorEntrada, double frete, String destinatario, String endereco, boolean isRetirada, String formaPagamento) {
         this.id = id;
         this.cliente = cliente;
         this.listaItens = listaItens;
@@ -47,11 +51,11 @@ public class Encomenda {
         this.formaPagamento = formaPagamento;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

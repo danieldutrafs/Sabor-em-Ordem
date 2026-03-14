@@ -19,7 +19,11 @@ public class ItemEncomenda {
     private int quantidadeItem;
     @Column (name = "preco_momento")
     private double precoMomento;
-
+    
+    public ItemEncomenda(){
+        
+    }
+    
     public ItemEncomenda(Produto p, int quantidadeItem, double precoMomento) {
         this.p = p;
         this.quantidadeItem = quantidadeItem;

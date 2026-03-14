@@ -5,6 +5,9 @@
 package br.com.sabor.view;
 
 import br.com.sabor.controller.Navegador;
+import br.com.sabor.dao.ProdutoDAO;
+import br.com.sabor.model.Produto;
+import java.util.List;
 
 public class TelaEstoque extends javax.swing.JFrame {
     /**
@@ -12,8 +15,29 @@ public class TelaEstoque extends javax.swing.JFrame {
      */
     public TelaEstoque() {
         initComponents();
+        atualizarTabela();
     }
+    public void atualizarTabela() {
+    // 1. Pega o modelo da sua JTable
+    javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblProduto.getModel();
+    
+    // 2. Limpa tudo o que tem nela agora (para não duplicar quando você recarregar)
+    modelo.setRowCount(0);
 
+    // 3. Busca a lista do banco usando o SEU método
+    ProdutoDAO dao = new ProdutoDAO();
+    List<Produto> lista = dao.listarTodos();
+
+    // 4. Preenche linha por linha
+    for (Produto p : lista) {
+        modelo.addRow(new Object[]{
+            p.getNomeProduto(),
+            p.getQuantidade(),
+            p.getValorUni(),
+            p.getCategoria().getNome() // Pega o nome da categoria que está ligada ao produto
+        });
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -39,7 +63,7 @@ public class TelaEstoque extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblProduto = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         btnNovoItem = new javax.swing.JButton();
 
@@ -53,7 +77,7 @@ public class TelaEstoque extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(197, 107, 107));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93)));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sabor/view/logo3.png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\dutra\\Documents\\PI\\Sabor-em-Ordem\\src\\main\\java\\br\\com\\sabor\\view\\logo3.png")); // NOI18N
         jLabel2.setText("jLabel2");
 
         btnTelaInicialE.setBackground(new java.awt.Color(255, 153, 153));
@@ -198,9 +222,9 @@ public class TelaEstoque extends javax.swing.JFrame {
                 .addContainerGap(55, Short.MAX_VALUE))
         );
 
-        jTable1.setBackground(new java.awt.Color(248, 245, 240));
-        jTable1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(191, 160, 93), 1, true));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblProduto.setBackground(new java.awt.Color(248, 245, 240));
+        tblProduto.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(191, 160, 93), 1, true));
+        tblProduto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -208,7 +232,7 @@ public class TelaEstoque extends javax.swing.JFrame {
                 "Nome", "Categoria", "Quantidade", "Valor uni."
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblProduto);
 
         jButton1.setBackground(new java.awt.Color(255, 153, 153));
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -376,7 +400,7 @@ public class TelaEstoque extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblProduto;
     private javax.swing.JTextField txtBuscarProduto;
     // End of variables declaration//GEN-END:variables
 }

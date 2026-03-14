@@ -15,6 +15,10 @@ public class MovimentacaoEstoque {
     private int quantidade;
     private String tipo;
 
+    public MovimentacaoEstoque() {
+    }
+
+    
     public MovimentacaoEstoque(Long id, Produto p, int quantidade, String tipo) {
         this.id = id;
         this.p = p;

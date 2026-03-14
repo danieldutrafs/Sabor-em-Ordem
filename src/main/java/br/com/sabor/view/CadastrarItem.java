@@ -4,13 +4,18 @@
  */
 package br.com.sabor.view;
 
+import br.com.sabor.dao.ProdutoDAO;
+import br.com.sabor.model.Categoria;
+import br.com.sabor.model.Produto;
+import javax.swing.JOptionPane;
+import br.com.sabor.controller.FormUtils;
+
 /**
  *
  * @author dutra
  */
 public class CadastrarItem extends javax.swing.JFrame {
 
-   
     /**
      * Creates new form CadastrarItem
      */
@@ -18,7 +23,6 @@ public class CadastrarItem extends javax.swing.JFrame {
         initComponents();
     }
 
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -35,9 +39,9 @@ public class CadastrarItem extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtNomeItem = new javax.swing.JTextField();
-        txtQuantidadeItem = new javax.swing.JTextField();
-        txtValorItem = new javax.swing.JTextField();
+        txtNome = new javax.swing.JTextField();
+        txtQuantidade = new javax.swing.JTextField();
+        txtValor = new javax.swing.JTextField();
         txtCategoria = new javax.swing.JTextField();
         btnCancelarItem = new javax.swing.JButton();
         btnSalvarItem = new javax.swing.JButton();
@@ -84,24 +88,24 @@ public class CadastrarItem extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Valor Unitário:");
 
-        txtNomeItem.setBackground(new java.awt.Color(153, 153, 153));
-        txtNomeItem.addActionListener(new java.awt.event.ActionListener() {
+        txtNome.setBackground(new java.awt.Color(153, 153, 153));
+        txtNome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNomeItemActionPerformed(evt);
+                txtNomeActionPerformed(evt);
             }
         });
 
-        txtQuantidadeItem.setBackground(new java.awt.Color(153, 153, 153));
-        txtQuantidadeItem.addActionListener(new java.awt.event.ActionListener() {
+        txtQuantidade.setBackground(new java.awt.Color(153, 153, 153));
+        txtQuantidade.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtQuantidadeItemActionPerformed(evt);
+                txtQuantidadeActionPerformed(evt);
             }
         });
 
-        txtValorItem.setBackground(new java.awt.Color(153, 153, 153));
-        txtValorItem.addActionListener(new java.awt.event.ActionListener() {
+        txtValor.setBackground(new java.awt.Color(153, 153, 153));
+        txtValor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtValorItemActionPerformed(evt);
+                txtValorActionPerformed(evt);
             }
         });
 
@@ -137,9 +141,9 @@ public class CadastrarItem extends javax.swing.JFrame {
         jLayeredPane1.setLayer(jLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jLabel4, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jLabel5, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(txtNomeItem, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(txtQuantidadeItem, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(txtValorItem, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(txtNome, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(txtQuantidade, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(txtValor, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(txtCategoria, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(btnCancelarItem, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(btnSalvarItem, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -159,15 +163,15 @@ public class CadastrarItem extends javax.swing.JFrame {
                                 .addGroup(jLayeredPane1Layout.createSequentialGroup()
                                     .addComponent(jLabel5)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtValorItem))
+                                    .addComponent(txtValor))
                                 .addGroup(jLayeredPane1Layout.createSequentialGroup()
                                     .addComponent(jLabel3)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtQuantidadeItem, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jLayeredPane1Layout.createSequentialGroup()
                                     .addComponent(jLabel2)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtNomeItem))
+                                    .addComponent(txtNome))
                                 .addComponent(jLabel4)))
                         .addGroup(jLayeredPane1Layout.createSequentialGroup()
                             .addGap(79, 79, 79)
@@ -183,15 +187,15 @@ public class CadastrarItem extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtNomeItem, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
+                    .addComponent(txtNome, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
                 .addGap(30, 30, 30)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtQuantidadeItem, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
+                    .addComponent(txtQuantidade, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
                 .addGap(30, 30, 30)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtValorItem, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -217,17 +221,17 @@ public class CadastrarItem extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtNomeItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeItemActionPerformed
+    private void txtNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNomeItemActionPerformed
+    }//GEN-LAST:event_txtNomeActionPerformed
 
-    private void txtQuantidadeItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantidadeItemActionPerformed
+    private void txtQuantidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantidadeActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtQuantidadeItemActionPerformed
+    }//GEN-LAST:event_txtQuantidadeActionPerformed
 
-    private void txtValorItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValorItemActionPerformed
+    private void txtValorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValorActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtValorItemActionPerformed
+    }//GEN-LAST:event_txtValorActionPerformed
 
     private void txtCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCategoriaActionPerformed
         // TODO add your handling code here:
@@ -238,12 +242,53 @@ public class CadastrarItem extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarItemActionPerformed
 
     private void btnSalvarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarItemActionPerformed
+
+        try{ // verificação d campo vazio
         
+            if (FormUtils.camposEstaoVazios(txtNome, txtQuantidade, txtValor, txtCategoria)) {
+                JOptionPane.showMessageDialog(this, "Atenção: Preencha todos os campos!");
+                return; 
+            }
+
+            // Pegamos os dados 
+            String nome = txtNome.getText();
+            int quantidade = Integer.parseInt(txtQuantidade.getText());
+            double valor = Double.parseDouble(txtValor.getText().replace(",", "."));
+            String nomeCategoria = txtCategoria.getText();
+
+            //Montando objeto Produto
+            Produto p = new Produto();
+            p.setNomeProduto(nome);
+            p.setQuantidade(quantidade);
+            p.setValorUni(valor);
+
+            //Lógica Categoria
+            Categoria cat = new Categoria();
+            cat.setNome(nomeCategoria);
+            p.setCategoria(cat);
+
+            //Salvar usando DAO
+            ProdutoDAO dao = new ProdutoDAO();
+            dao.salvarProduto(p);
+
+            // se der certo
+            JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
+
+            // Limpeza dos campos
+            FormUtils.limparCampos(txtNome, txtQuantidade, txtValor, txtCategoria);
+
+        } catch (NumberFormatException e) {
+            // erro de digitação
+            JOptionPane.showMessageDialog(this, "Erro: Verifique se Quantidade e Valor são números válidos!");
+        } catch (Exception e) {
+            // falha no banco 
+            JOptionPane.showMessageDialog(this, "Erro ao salvar no banco: " + e.getMessage());
+        }    
     }//GEN-LAST:event_btnSalvarItemActionPerformed
 
     /**
-     * @param args the command line arguments
-     */
+         * @param args the command line arguments
+         */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -287,8 +332,8 @@ public class CadastrarItem extends javax.swing.JFrame {
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField txtCategoria;
-    private javax.swing.JTextField txtNomeItem;
-    private javax.swing.JTextField txtQuantidadeItem;
-    private javax.swing.JTextField txtValorItem;
+    private javax.swing.JTextField txtNome;
+    private javax.swing.JTextField txtQuantidade;
+    private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables
 }

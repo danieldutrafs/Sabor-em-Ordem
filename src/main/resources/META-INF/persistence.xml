@@ -6,14 +6,23 @@
     <persistence-unit name="SaborEmOrdemPU" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         
+        <class>br.com.sabor.model.Categoria</class>
+        <class>br.com.sabor.model.Produto</class>
+        <class>br.com.sabor.model.Clientes</class>
+        <class>br.com.sabor.model.Encomenda</class>
+        <class>br.com.sabor.model.ItemEncomenda</class>
+        <class>br.com.sabor.model.MovimentacaoEstoque</class>
+        
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/sabor_em_ordem"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/sabor_em_ordem?serverTimezone=UTC"/>
             <property name="javax.persistence.jdbc.user" value="root"/>
             <property name="javax.persistence.jdbc.password" value="root"/>
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+            
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
         </properties>
