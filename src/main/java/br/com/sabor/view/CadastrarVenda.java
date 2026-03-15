@@ -8,12 +8,13 @@ package br.com.sabor.view;
  *
  * @author dutra
  */
-public class CadastrarVenda extends javax.swing.JFrame {
+public class CadastrarVenda extends javax.swing.JDialog {
 
     /**
      * Creates new form CadastrarVenda
      */
-    public CadastrarVenda() {
+    public CadastrarVenda(javax.swing.JFrame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
     }
 
@@ -63,7 +64,7 @@ public class CadastrarVenda extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setForeground(new java.awt.Color(0, 0, 0));
@@ -201,6 +202,11 @@ public class CadastrarVenda extends javax.swing.JFrame {
 
         jButton3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton3.setText("Cancelar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setBackground(new java.awt.Color(197, 107, 107));
         jButton4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -356,6 +362,10 @@ public class CadastrarVenda extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+      this.dispose();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -389,7 +399,7 @@ public class CadastrarVenda extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CadastrarVenda().setVisible(true);
+                new CadastrarVenda(null, true).setVisible(true);
             }
         });
     }

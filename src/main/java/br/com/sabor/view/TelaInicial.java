@@ -4,15 +4,19 @@
  */
 package br.com.sabor.view;
 
+import br.com.sabor.controller.Navegador;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
-import br.com.sabor.controller.Navegador.*;
+
 /**
  *
  * @author dutra
  */
 public class TelaInicial extends javax.swing.JFrame {
-    private static TelaEstoque telaEstoqueUnica;    /**
+
+    private static TelaEstoque telaEstoqueUnica;
+
+    /**
      * Creates new form TelaInicial
      */
     public TelaInicial() {
@@ -34,7 +38,7 @@ public class TelaInicial extends javax.swing.JFrame {
         btnTelaInicialTI = new javax.swing.JButton();
         btnEstoqueTI = new javax.swing.JButton();
         btnEncomendasTI = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        TelaClientesTI = new javax.swing.JButton();
         btnRelatoriosTI = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -48,7 +52,7 @@ public class TelaInicial extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         pFundo.setBackground(new java.awt.Color(204, 204, 204));
         pFundo.setOpaque(true);
@@ -80,11 +84,21 @@ public class TelaInicial extends javax.swing.JFrame {
         btnEncomendasTI.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btnEncomendasTI.setForeground(new java.awt.Color(0, 0, 0));
         btnEncomendasTI.setText("Encomendas");
+        btnEncomendasTI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEncomendasTIActionPerformed(evt);
+            }
+        });
 
-        jButton4.setBackground(new java.awt.Color(255, 153, 153));
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(0, 0, 0));
-        jButton4.setText("Clientes");
+        TelaClientesTI.setBackground(new java.awt.Color(255, 153, 153));
+        TelaClientesTI.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        TelaClientesTI.setForeground(new java.awt.Color(0, 0, 0));
+        TelaClientesTI.setText("Clientes");
+        TelaClientesTI.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TelaClientesTIActionPerformed(evt);
+            }
+        });
 
         btnRelatoriosTI.setBackground(new java.awt.Color(255, 153, 153));
         btnRelatoriosTI.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -96,7 +110,7 @@ public class TelaInicial extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sabor/view/logo3.png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\dutra\\Documents\\PI\\Sabor-em-Ordem\\src\\main\\java\\br\\com\\sabor\\view\\logo3.png")); // NOI18N
         jLabel2.setText("jLabel2");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -110,12 +124,12 @@ public class TelaInicial extends javax.swing.JFrame {
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(42, 42, 42)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnEstoqueTI, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnTelaInicialTI, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnEncomendasTI)
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnRelatoriosTI, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnEstoqueTI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnTelaInicialTI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(TelaClientesTI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRelatoriosTI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnEncomendasTI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(47, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -130,10 +144,10 @@ public class TelaInicial extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnEncomendasTI)
                 .addGap(18, 18, 18)
-                .addComponent(jButton4)
+                .addComponent(TelaClientesTI)
                 .addGap(18, 18, 18)
                 .addComponent(btnRelatoriosTI)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(197, 107, 107));
@@ -290,20 +304,30 @@ public class TelaInicial extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovaVendaTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovaVendaTIActionPerformed
-        // TODO add your handling code here:
+        CadastrarVenda dialog = new CadastrarVenda(this, true);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }//GEN-LAST:event_btnNovaVendaTIActionPerformed
 
     private void btnRelatoriosTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatoriosTIActionPerformed
-        // TODO add your handling code here:
+         Navegador.navegar(this, new Relatorio());
     }//GEN-LAST:event_btnRelatoriosTIActionPerformed
 
     private void btnEstoqueTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstoqueTIActionPerformed
-        br.com.sabor.controller.Navegador.exibirTelaE();
+       Navegador.navegar(this, new TelaEstoque());
     }//GEN-LAST:event_btnEstoqueTIActionPerformed
 
     private void btnTelaInicialTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTelaInicialTIActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnTelaInicialTIActionPerformed
+
+    private void btnEncomendasTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEncomendasTIActionPerformed
+       Navegador.navegar(this, new Encomendas());
+    }//GEN-LAST:event_btnEncomendasTIActionPerformed
+
+    private void TelaClientesTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TelaClientesTIActionPerformed
+        Navegador.navegar(this, new Clientes());
+    }//GEN-LAST:event_TelaClientesTIActionPerformed
 
     /**
      * @param args the command line arguments
@@ -341,12 +365,12 @@ public class TelaInicial extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton TelaClientesTI;
     private javax.swing.JButton btnEncomendasTI;
     private javax.swing.JButton btnEstoqueTI;
     private javax.swing.JButton btnNovaVendaTI;
     private javax.swing.JButton btnRelatoriosTI;
     private javax.swing.JButton btnTelaInicialTI;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -4,6 +4,8 @@
  */
 package br.com.sabor.view;
 
+import br.com.sabor.controller.Navegador;
+
 /**
  *
  * @author dutra
@@ -113,13 +115,15 @@ public class Encomendas extends javax.swing.JFrame {
         btnClientesE = new javax.swing.JButton();
         btnRelatorioE = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        txtBuscarProduto = new javax.swing.JTextField();
+        txtBuscarVenda = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         painelLista = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnProntos = new javax.swing.JButton();
+        btnProducao = new javax.swing.JButton();
+        btnTodos = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -130,7 +134,7 @@ public class Encomendas extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93), 2));
         jPanel1.setPreferredSize(new java.awt.Dimension(756, 508));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sabor/view/logo3.png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\dutra\\Documents\\PI\\Sabor-em-Ordem\\src\\main\\java\\br\\com\\sabor\\view\\logo3.png")); // NOI18N
         jLabel2.setText("jLabel2");
 
         btnTelaInicialTI.setBackground(new java.awt.Color(255, 153, 153));
@@ -230,11 +234,11 @@ public class Encomendas extends javax.swing.JFrame {
         jLabel1.setText("Registro de Enocmendas");
         jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(238, 18, -1, -1));
 
-        txtBuscarProduto.setBackground(new java.awt.Color(255, 255, 255));
-        txtBuscarProduto.setForeground(new java.awt.Color(0, 0, 0));
-        txtBuscarProduto.setText("Buscar Venda");
-        txtBuscarProduto.setOpaque(true);
-        jPanel2.add(txtBuscarProduto, new org.netbeans.lib.awtextra.AbsoluteConstraints(238, 74, 223, 34));
+        txtBuscarVenda.setBackground(new java.awt.Color(255, 255, 255));
+        txtBuscarVenda.setForeground(new java.awt.Color(0, 0, 0));
+        txtBuscarVenda.setText("Buscar Venda");
+        txtBuscarVenda.setOpaque(true);
+        jPanel2.add(txtBuscarVenda, new org.netbeans.lib.awtextra.AbsoluteConstraints(238, 74, 223, 34));
 
         jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -247,28 +251,28 @@ public class Encomendas extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(204, 204, 204));
 
-        jButton4.setBackground(new java.awt.Color(255, 255, 255));
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(0, 0, 0));
-        jButton4.setText("Prontos");
+        btnProntos.setBackground(new java.awt.Color(255, 255, 255));
+        btnProntos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnProntos.setForeground(new java.awt.Color(0, 0, 0));
+        btnProntos.setText("Prontos");
 
-        jButton2.setBackground(new java.awt.Color(255, 255, 255));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(0, 0, 0));
-        jButton2.setText("Em produção");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnProducao.setBackground(new java.awt.Color(255, 255, 255));
+        btnProducao.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnProducao.setForeground(new java.awt.Color(0, 0, 0));
+        btnProducao.setText("Em produção");
+        btnProducao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnProducaoActionPerformed(evt);
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(197, 107, 107));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(0, 0, 0));
-        jButton1.setText("Todos");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnTodos.setBackground(new java.awt.Color(197, 107, 107));
+        btnTodos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnTodos.setForeground(new java.awt.Color(0, 0, 0));
+        btnTodos.setText("Todos");
+        btnTodos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnTodosActionPerformed(evt);
             }
         });
 
@@ -278,11 +282,11 @@ public class Encomendas extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(229, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(btnTodos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addComponent(btnProducao)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton4)
+                .addComponent(btnProntos)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -290,13 +294,35 @@ public class Encomendas extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(13, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(btnProntos)
+                    .addComponent(btnProducao)
+                    .addComponent(btnTodos))
                 .addContainerGap())
         );
 
         jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(238, 62, 520, -1));
+
+        jButton3.setBackground(new java.awt.Color(255, 153, 153));
+        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(0, 0, 0));
+        jButton3.setText("Nova Venda");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 230, -1, -1));
+
+        jButton5.setBackground(new java.awt.Color(255, 153, 153));
+        jButton5.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        jButton5.setForeground(new java.awt.Color(0, 0, 0));
+        jButton5.setText("Editar Venda");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 320, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -313,7 +339,7 @@ public class Encomendas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTelaInicialTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTelaInicialTIActionPerformed
-        // TODO add your handling code here:
+        Navegador.navegar(this, new TelaInicial());
     }//GEN-LAST:event_btnTelaInicialTIActionPerformed
 
     private void btnEncomendaEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEncomendaEActionPerformed
@@ -321,24 +347,35 @@ public class Encomendas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEncomendaEActionPerformed
 
     private void btnEstoqueEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstoqueEActionPerformed
-        // TODO add your handling code here:
+       Navegador.navegar(this, new TelaEstoque());
     }//GEN-LAST:event_btnEstoqueEActionPerformed
 
     private void btnClientesEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesEActionPerformed
-        // TODO add your handling code here:
+       Navegador.navegar(this, new Clientes());
     }//GEN-LAST:event_btnClientesEActionPerformed
 
     private void btnRelatorioEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioEActionPerformed
-        // TODO add your handling code here:
+        Navegador.navegar(this, new Relatorio());
     }//GEN-LAST:event_btnRelatorioEActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTodosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnTodosActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnProducaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProducaoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnProducaoActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        CadastrarVenda dialog = new CadastrarVenda(this, true);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+       EditarVenda ev = new EditarVenda();
+       ev.setVisible(true);
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -379,11 +416,13 @@ public class Encomendas extends javax.swing.JFrame {
     private javax.swing.JButton btnClientesE;
     private javax.swing.JButton btnEncomendaE;
     private javax.swing.JButton btnEstoqueE;
+    private javax.swing.JButton btnProducao;
+    private javax.swing.JButton btnProntos;
     private javax.swing.JButton btnRelatorioE;
     private javax.swing.JButton btnTelaInicialTI;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton btnTodos;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
@@ -391,6 +430,6 @@ public class Encomendas extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel painelLista;
-    private javax.swing.JTextField txtBuscarProduto;
+    private javax.swing.JTextField txtBuscarVenda;
     // End of variables declaration//GEN-END:variables
 }

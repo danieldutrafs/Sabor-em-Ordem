@@ -4,6 +4,8 @@
  */
 package br.com.sabor.view;
 
+import br.com.sabor.controller.Navegador;
+
 /**
  *
  * @author dutra
@@ -106,7 +108,7 @@ public class Clientes extends javax.swing.JFrame {
         btnRelatoriosC = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txtBuscarProduto = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         painelListaClientes = new javax.swing.JPanel();
 
@@ -129,7 +131,7 @@ public class Clientes extends javax.swing.JFrame {
         jLayeredPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93)));
         jLayeredPane1.setOpaque(true);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sabor/view/logo3.png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\dutra\\Documents\\PI\\Sabor-em-Ordem\\src\\main\\java\\br\\com\\sabor\\view\\logo3.png")); // NOI18N
         jLabel2.setText("jLabel2");
 
         btnEstoqueC.setBackground(new java.awt.Color(255, 153, 153));
@@ -233,10 +235,15 @@ public class Clientes extends javax.swing.JFrame {
         txtBuscarProduto.setText("Buscar Cliente");
         txtBuscarProduto.setOpaque(true);
 
-        jButton1.setBackground(new java.awt.Color(255, 153, 153));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(0, 0, 0));
-        jButton1.setText("Editar");
+        btnEditar.setBackground(new java.awt.Color(255, 153, 153));
+        btnEditar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnEditar.setForeground(new java.awt.Color(0, 0, 0));
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         painelListaClientes.setBackground(new java.awt.Color(204, 204, 204));
         painelListaClientes.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93), 2));
@@ -255,7 +262,7 @@ public class Clientes extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(txtBuscarProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(4, 4, 4)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -272,7 +279,7 @@ public class Clientes extends javax.swing.JFrame {
                     .addComponent(txtBuscarProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
-                        .addComponent(jButton1)))
+                        .addComponent(btnEditar)))
                 .addGap(5, 5, 5)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -292,11 +299,11 @@ public class Clientes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEstoqueCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstoqueCActionPerformed
-        // TODO add your handling code here:
+        Navegador.navegar(this, new TelaEstoque());
     }//GEN-LAST:event_btnEstoqueCActionPerformed
 
     private void btnTelaIniciaC1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTelaIniciaC1ActionPerformed
-        // TODO add your handling code here:
+        Navegador.navegar(this, new TelaInicial());
     }//GEN-LAST:event_btnTelaIniciaC1ActionPerformed
 
     private void btnClientesCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesCActionPerformed
@@ -304,12 +311,17 @@ public class Clientes extends javax.swing.JFrame {
     }//GEN-LAST:event_btnClientesCActionPerformed
 
     private void btnEncomendaCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEncomendaCActionPerformed
-        // TODO add your handling code here:
+        Navegador.navegar(this, new Encomendas());
     }//GEN-LAST:event_btnEncomendaCActionPerformed
 
     private void btnRelatoriosCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatoriosCActionPerformed
-        // TODO add your handling code here:
+         Navegador.navegar(this, new Relatorio());
     }//GEN-LAST:event_btnRelatoriosCActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+       EditarCliente ec = new EditarCliente();
+       ec.setVisible(true);
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -348,11 +360,11 @@ public class Clientes extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClientesC;
+    private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEncomendaC;
     private javax.swing.JButton btnEstoqueC;
     private javax.swing.JButton btnRelatoriosC;
     private javax.swing.JButton btnTelaIniciaC1;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLayeredPane jLayeredPane1;

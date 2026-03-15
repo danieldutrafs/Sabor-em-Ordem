@@ -10,6 +10,7 @@ import br.com.sabor.model.Produto;
 import java.util.List;
 
 public class TelaEstoque extends javax.swing.JFrame {
+
     /**
      * Creates new form TelaEstoque
      */
@@ -17,27 +18,29 @@ public class TelaEstoque extends javax.swing.JFrame {
         initComponents();
         atualizarTabela();
     }
+
     public void atualizarTabela() {
-    // 1. Pega o modelo da sua JTable
-    javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblProduto.getModel();
-    
-    // 2. Limpa tudo o que tem nela agora (para não duplicar quando você recarregar)
-    modelo.setRowCount(0);
+        // 1. Pega o modelo da sua JTable
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblProduto.getModel();
 
-    // 3. Busca a lista do banco usando o SEU método
-    ProdutoDAO dao = new ProdutoDAO();
-    List<Produto> lista = dao.listarTodos();
+        // 2. Limpa tudo o que tem nela agora (para não duplicar quando você recarregar)
+        modelo.setRowCount(0);
 
-    // 4. Preenche linha por linha
-    for (Produto p : lista) {
-        modelo.addRow(new Object[]{
-            p.getNomeProduto(),
-            p.getQuantidade(),
-            p.getValorUni(),
-            p.getCategoria().getNome() // Pega o nome da categoria que está ligada ao produto
-        });
+        // 3. Busca a lista do banco usando o SEU método
+        ProdutoDAO dao = new ProdutoDAO();
+        List<Produto> lista = dao.listarTodos();
+
+        // 4. Preenche linha por linha
+        for (Produto p : lista) {
+            modelo.addRow(new Object[]{
+                p.getNomeProduto(),
+                p.getQuantidade(),
+                p.getValorUni(),
+                p.getCategoria().getNome() // Pega o nome da categoria que está ligada ao produto
+            });
+        }
     }
-}
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -64,7 +67,7 @@ public class TelaEstoque extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProduto = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        btnMovi = new javax.swing.JButton();
         btnNovoItem = new javax.swing.JButton();
 
         jLabel3.setText("jLabel3");
@@ -234,10 +237,15 @@ public class TelaEstoque extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblProduto);
 
-        jButton1.setBackground(new java.awt.Color(255, 153, 153));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(0, 0, 0));
-        jButton1.setText("Registrar Movimentação");
+        btnMovi.setBackground(new java.awt.Color(255, 153, 153));
+        btnMovi.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnMovi.setForeground(new java.awt.Color(0, 0, 0));
+        btnMovi.setText("Registrar Movimentação");
+        btnMovi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMoviActionPerformed(evt);
+            }
+        });
 
         btnNovoItem.setBackground(new java.awt.Color(255, 153, 153));
         btnNovoItem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -255,7 +263,7 @@ public class TelaEstoque extends javax.swing.JFrame {
         jLayeredPane1.setLayer(jPanel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jPanel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(jButton1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(btnMovi, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(btnNovoItem, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
@@ -280,7 +288,7 @@ public class TelaEstoque extends javax.swing.JFrame {
                         .addGap(0, 19, Short.MAX_VALUE))
                     .addGroup(jLayeredPane1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
+                        .addComponent(btnMovi)
                         .addGap(45, 45, 45)
                         .addComponent(btnNovoItem)
                         .addGap(83, 83, 83))))
@@ -302,8 +310,8 @@ public class TelaEstoque extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnNovoItem)
-                    .addComponent(jButton1))
-                .addContainerGap(15, Short.MAX_VALUE))
+                    .addComponent(btnMovi))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -314,16 +322,17 @@ public class TelaEstoque extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLayeredPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTelaInicialEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTelaInicialEActionPerformed
-      br.com.sabor.controller.Navegador.exibirTelaI();
-        
-    
+       Navegador.navegar(this, new TelaInicial());
+
     }//GEN-LAST:event_btnTelaInicialEActionPerformed
 
     private void btnEstoqueEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstoqueEActionPerformed
@@ -331,21 +340,26 @@ public class TelaEstoque extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEstoqueEActionPerformed
 
     private void btnEncomendasEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEncomendasEActionPerformed
-        // TODO add your handling code here:
+        Navegador.navegar(this, new Encomendas());
     }//GEN-LAST:event_btnEncomendasEActionPerformed
 
     private void btnClientesEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesEActionPerformed
-        // TODO add your handling code here:
+        Navegador.navegar(this, new Clientes());
     }//GEN-LAST:event_btnClientesEActionPerformed
 
     private void btnRelatorioEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioEActionPerformed
-        // TODO add your handling code here:
+        Navegador.navegar(this, new Relatorio());
     }//GEN-LAST:event_btnRelatorioEActionPerformed
 
     private void btnNovoItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoItemActionPerformed
         CadastrarItem telaCI = new CadastrarItem();
         telaCI.setVisible(true);
     }//GEN-LAST:event_btnNovoItemActionPerformed
+
+    private void btnMoviActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoviActionPerformed
+      RegistrarMovi rm = new RegistrarMovi();
+      rm.setVisible(true);
+    }//GEN-LAST:event_btnMoviActionPerformed
 
     /**
      * @param args the command line arguments
@@ -386,10 +400,10 @@ public class TelaEstoque extends javax.swing.JFrame {
     private javax.swing.JButton btnClientesE;
     private javax.swing.JButton btnEncomendasE;
     private javax.swing.JButton btnEstoqueE;
+    private javax.swing.JButton btnMovi;
     private javax.swing.JButton btnNovoItem;
     private javax.swing.JButton btnRelatorioE;
     private javax.swing.JButton btnTelaInicialE;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

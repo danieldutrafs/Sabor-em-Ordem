@@ -4,6 +4,8 @@
  */
 package br.com.sabor.view;
 
+import br.com.sabor.controller.Navegador;
+
 /**
  *
  * @author dutra
@@ -44,6 +46,7 @@ public class Relatorio extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
 
@@ -53,7 +56,7 @@ public class Relatorio extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(197, 107, 107));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sabor/view/logo3.png"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\dutra\\Documents\\PI\\Sabor-em-Ordem\\src\\main\\java\\br\\com\\sabor\\view\\logo3.png")); // NOI18N
         jLabel2.setText("jLabel2");
 
         btnTelaInicialTI.setBackground(new java.awt.Color(255, 153, 153));
@@ -231,15 +234,24 @@ public class Relatorio extends javax.swing.JFrame {
         jPanel6.setBackground(new java.awt.Color(204, 204, 204));
         jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93), 2));
 
+        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel7.setText("Vendas");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(jLabel7)
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel7)
+                .addContainerGap(78, Short.MAX_VALUE))
         );
 
         jPanel7.setBackground(new java.awt.Color(204, 204, 204));
@@ -287,9 +299,9 @@ public class Relatorio extends javax.swing.JFrame {
                                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(31, 31, 31)
                                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                                        .addGap(37, 37, 37)
                                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(39, 39, 39)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                                         .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(10, 10, 10))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -331,23 +343,23 @@ public class Relatorio extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTelaInicialTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTelaInicialTIActionPerformed
-        // TODO add your handling code here:
+        Navegador.navegar(this, new TelaInicial());
     }//GEN-LAST:event_btnTelaInicialTIActionPerformed
 
     private void btnEstoqueEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstoqueEActionPerformed
-        // TODO add your handling code here:
+         Navegador.navegar(this, new TelaEstoque());
     }//GEN-LAST:event_btnEstoqueEActionPerformed
 
     private void btnEncomendaEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEncomendaEActionPerformed
-        // TODO add your handling code here:
+        Navegador.navegar(this, new Encomendas());
     }//GEN-LAST:event_btnEncomendaEActionPerformed
 
     private void btnClientesEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesEActionPerformed
-        // TODO add your handling code here:
+        Navegador.navegar(this, new Clientes());
     }//GEN-LAST:event_btnClientesEActionPerformed
 
     private void btnRelatorioEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioEActionPerformed
-        // TODO add your handling code here:
+     
     }//GEN-LAST:event_btnRelatorioEActionPerformed
 
     /**
@@ -397,6 +409,7 @@ public class Relatorio extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

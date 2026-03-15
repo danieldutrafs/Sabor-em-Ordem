@@ -92,6 +92,11 @@ public class EditarCliente extends javax.swing.JFrame {
         btnCancelarEd.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         btnCancelarEd.setForeground(new java.awt.Color(0, 0, 0));
         btnCancelarEd.setText("Cancelar");
+        btnCancelarEd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarEdActionPerformed(evt);
+            }
+        });
 
         btnSalvarEd.setBackground(new java.awt.Color(255, 153, 153));
         btnSalvarEd.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
@@ -179,6 +184,10 @@ public class EditarCliente extends javax.swing.JFrame {
     private void txtEnderecoEdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEnderecoEdActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtEnderecoEdActionPerformed
+
+    private void btnCancelarEdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarEdActionPerformed
+       this.dispose();
+    }//GEN-LAST:event_btnCancelarEdActionPerformed
 
     /**
      * @param args the command line arguments
