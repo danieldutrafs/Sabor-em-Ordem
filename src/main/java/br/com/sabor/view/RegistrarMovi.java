@@ -4,6 +4,18 @@
  */
 package br.com.sabor.view;
 
+import br.com.sabor.controller.FormUtils;
+import br.com.sabor.dao.ProdutoDAO;
+import br.com.sabor.model.MovimentacaoEstoque;
+import br.com.sabor.model.Produto;
+import br.com.sabor.util.JPAUtil;
+import java.sql.Connection;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author dutra
@@ -15,6 +27,24 @@ public class RegistrarMovi extends javax.swing.JFrame {
      */
     public RegistrarMovi() {
         initComponents();
+        produtosCombo();
+    }
+
+    private void produtosCombo() {
+        DefaultComboBoxModel modeloCombo = new DefaultComboBoxModel();
+        modeloCombo.addElement("Selecione...");
+
+        try {
+            ProdutoDAO dao = new ProdutoDAO();
+            List<Produto> produtos = dao.listarTodos();
+
+            for (Produto p : produtos) {
+                modeloCombo.addElement(p);
+            }
+            cbxProduto.setModel(modeloCombo);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao carregar: " + e.getMessage());
+        }
     }
 
     /**
@@ -27,22 +57,23 @@ public class RegistrarMovi extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel3 = new javax.swing.JLabel();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         btnSalvar = new javax.swing.JLayeredPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtQuantidade = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        tblProduto = new javax.swing.JTable();
+        btnAdicionar = new javax.swing.JButton();
+        btnRemover = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
         btnCancelar = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnSalvarMovi = new javax.swing.JButton();
+        cbxProduto = new javax.swing.JComboBox<>();
+        rbEntrada = new javax.swing.JRadioButton();
+        rbSaida = new javax.swing.JRadioButton();
 
         jLabel3.setText("jLabel3");
 
@@ -81,49 +112,39 @@ public class RegistrarMovi extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Qtd:");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblProduto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Item", "Quantidade"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblProduto);
 
-        jButton1.setBackground(new java.awt.Color(255, 153, 153));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(0, 0, 0));
-        jButton1.setText("Adicionar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnAdicionar.setBackground(new java.awt.Color(255, 153, 153));
+        btnAdicionar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnAdicionar.setForeground(new java.awt.Color(0, 0, 0));
+        btnAdicionar.setText("Adicionar");
+        btnAdicionar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnAdicionarActionPerformed(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(255, 153, 153));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(0, 0, 0));
-        jButton2.setText("Remover");
+        btnRemover.setBackground(new java.awt.Color(255, 153, 153));
+        btnRemover.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnRemover.setForeground(new java.awt.Color(0, 0, 0));
+        btnRemover.setText("Remover");
+        btnRemover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoverActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Tipo de Movimentação:");
-
-        jCheckBox1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jCheckBox1.setForeground(new java.awt.Color(0, 0, 0));
-        jCheckBox1.setText("Entrada");
-
-        jCheckBox2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jCheckBox2.setForeground(new java.awt.Color(0, 0, 0));
-        jCheckBox2.setText("Saída");
 
         btnCancelar.setBackground(new java.awt.Color(255, 255, 255));
         btnCancelar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -135,24 +156,46 @@ public class RegistrarMovi extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setBackground(new java.awt.Color(255, 153, 153));
-        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(0, 0, 0));
-        jButton4.setText("Salvar");
+        btnSalvarMovi.setBackground(new java.awt.Color(255, 153, 153));
+        btnSalvarMovi.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnSalvarMovi.setForeground(new java.awt.Color(0, 0, 0));
+        btnSalvarMovi.setText("Salvar");
+        btnSalvarMovi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarMoviActionPerformed(evt);
+            }
+        });
+
+        cbxProduto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        buttonGroup1.add(rbEntrada);
+        rbEntrada.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        rbEntrada.setForeground(new java.awt.Color(0, 0, 0));
+        rbEntrada.setText("Entrada");
+
+        buttonGroup1.add(rbSaida);
+        rbSaida.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        rbSaida.setForeground(new java.awt.Color(0, 0, 0));
+        rbSaida.setText("Saída");
+        rbSaida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbSaidaActionPerformed(evt);
+            }
+        });
 
         btnSalvar.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         btnSalvar.setLayer(jLabel5, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        btnSalvar.setLayer(jTextField1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         btnSalvar.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        btnSalvar.setLayer(jTextField2, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        btnSalvar.setLayer(txtQuantidade, javax.swing.JLayeredPane.DEFAULT_LAYER);
         btnSalvar.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        btnSalvar.setLayer(jButton1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        btnSalvar.setLayer(jButton2, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        btnSalvar.setLayer(btnAdicionar, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        btnSalvar.setLayer(btnRemover, javax.swing.JLayeredPane.DEFAULT_LAYER);
         btnSalvar.setLayer(jLabel4, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        btnSalvar.setLayer(jCheckBox1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        btnSalvar.setLayer(jCheckBox2, javax.swing.JLayeredPane.DEFAULT_LAYER);
         btnSalvar.setLayer(btnCancelar, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        btnSalvar.setLayer(jButton4, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        btnSalvar.setLayer(btnSalvarMovi, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        btnSalvar.setLayer(cbxProduto, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        btnSalvar.setLayer(rbEntrada, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        btnSalvar.setLayer(rbSaida, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout btnSalvarLayout = new javax.swing.GroupLayout(btnSalvar);
         btnSalvar.setLayout(btnSalvarLayout);
@@ -165,29 +208,29 @@ public class RegistrarMovi extends javax.swing.JFrame {
                         .addGap(14, 14, 14)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20)
+                        .addComponent(cbxProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(btnSalvarLayout.createSequentialGroup()
                         .addGap(12, 12, 12)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(btnSalvarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(btnSalvarLayout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addGroup(btnSalvarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jCheckBox1)
-                            .addComponent(jCheckBox2)))
+                            .addComponent(btnRemover, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnAdicionar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(btnSalvarLayout.createSequentialGroup()
                         .addGap(58, 58, 58)
                         .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(35, 35, 35)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnSalvarMovi, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(btnSalvarLayout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addGroup(btnSalvarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(rbEntrada)
+                            .addComponent(jLabel4)
+                            .addComponent(rbSaida))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         btnSalvarLayout.setVerticalGroup(
@@ -197,29 +240,29 @@ public class RegistrarMovi extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(btnSalvarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbxProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(btnSalvarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(btnSalvarLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(btnSalvarLayout.createSequentialGroup()
                         .addGap(45, 45, 45)
-                        .addComponent(jButton1)
+                        .addComponent(btnAdicionar)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2)))
+                        .addComponent(btnRemover)))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
-                .addComponent(jCheckBox1)
+                .addComponent(rbEntrada)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox2)
-                .addGap(18, 18, 18)
+                .addComponent(rbSaida)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(btnSalvarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelar)
-                    .addComponent(jButton4))
-                .addContainerGap(16, Short.MAX_VALUE))
+                    .addComponent(btnSalvarMovi))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -236,13 +279,132 @@ public class RegistrarMovi extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
+        // verificar se há campos vazio
+        if (FormUtils.camposVazios(txtQuantidade)) {
+            return;
+        }
+        // verificar se foi escolhido um produto
+        if (cbxProduto.getSelectedIndex() <= 0) {
+            JOptionPane.showMessageDialog(this, "Selecione um produto!");
+            return;
+        }
+
+        try {
+            //verificar caracteres corretos
+            int qtd = Integer.parseInt(txtQuantidade.getText());
+            //pega o objeto produto do cbx
+            Produto p = (Produto) cbxProduto.getSelectedItem();
+
+            //salvar na tabela
+            DefaultTableModel modelo = (DefaultTableModel) tblProduto.getModel();
+            modelo.addRow(new Object[]{
+                p.getNomeProduto(),
+                qtd
+            });
+
+            FormUtils.limparCampos(txtQuantidade);
+            cbxProduto.setSelectedIndex(0);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "A qautnidade deve ser um número inteiro");
+        }
+    }//GEN-LAST:event_btnAdicionarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-       this.dispose();
+        this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void rbSaidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbSaidaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbSaidaActionPerformed
+
+    private void btnRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverActionPerformed
+        DefaultTableModel modelo = (DefaultTableModel) tblProduto.getModel();
+
+        // verificar se o usuário selecionou a linha
+        int linha = tblProduto.getSelectedRow();
+
+        if (linha != -1) {
+            // remover o item e atualizar tabela 
+            modelo.removeRow(linha);
+        } else {
+            JOptionPane.showMessageDialog(this, "Clique em um produto na tabela para remover!");
+        }
+    }//GEN-LAST:event_btnRemoverActionPerformed
+
+    private void btnSalvarMoviActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarMoviActionPerformed
+        DefaultTableModel modelo = (DefaultTableModel) tblProduto.getModel();
+
+        // verificar se ha itens na tabela
+        if (modelo.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Adicione produtos a tabela antes de salvar!");
+            return;
+        }
+        // verificar se entrada/saida foram selecionado
+        String tipoSelecionado = "";
+        if (rbEntrada.isSelected()) {
+            tipoSelecionado = "Entrada";
+        } else if (rbSaida.isSelected()) {
+            tipoSelecionado = "Saída";
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione se é Entrada ou Saída!");
+            return;
+        }
+
+        EntityManager em = JPAUtil.getEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            // loop para percorrer cada linha da tabela
+            for (int i = 0; i < modelo.getRowCount(); i++) {
+
+                //pega dados da tabela
+                String nomeProd = modelo.getValueAt(i, 0).toString();
+                int qtdMov = Integer.parseInt(modelo.getValueAt(i, 1).toString());
+
+                //buscar nome
+                Produto p = em.createQuery("SELECT p FROM Produto p WHERE p.nomeProduto = :nome", Produto.class)
+                        .setParameter("nome", nomeProd)
+                        .getSingleResult();
+
+                // cria movimentação
+                MovimentacaoEstoque mov = new MovimentacaoEstoque();
+                mov.setP(p);
+                mov.setQuantidade(qtdMov);
+
+                //lógica estoque
+                if (rbEntrada.isSelected()) {
+                    mov.setTipo("Entrada");
+                    p.adicionarEstoque(qtdMov);
+                } else if (rbSaida.isSelected()) {
+                    mov.setTipo("Saída");
+                    p.removerEstoque(qtdMov); 
+                } else {
+                    throw new Exception("Nenhum tipo (Entrada/Saída) foi selecionado!");
+                }
+                
+                em.persist(mov);
+                em.merge(p);
+            }
+
+            // grava no banco de dados
+            em.getTransaction().commit();
+            JOptionPane.showMessageDialog(this, "Movimentação realizada!");
+
+            this.dispose();
+        } catch (Exception e) {
+            //desfaz
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            JOptionPane.showMessageDialog(this, "Erro ao salvar: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+    }//GEN-LAST:event_btnSalvarMoviActionPerformed
 
     /**
      * @param args the command line arguments
@@ -280,13 +442,13 @@ public class RegistrarMovi extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdicionar;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnRemover;
     private javax.swing.JLayeredPane btnSalvar;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JButton btnSalvarMovi;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JComboBox<String> cbxProduto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -294,8 +456,9 @@ public class RegistrarMovi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JRadioButton rbEntrada;
+    private javax.swing.JRadioButton rbSaida;
+    private javax.swing.JTable tblProduto;
+    private javax.swing.JTextField txtQuantidade;
     // End of variables declaration//GEN-END:variables
 }

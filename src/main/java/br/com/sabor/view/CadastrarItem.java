@@ -245,7 +245,7 @@ public class CadastrarItem extends javax.swing.JFrame {
 
         try{ // verificação d campo vazio
         
-            if (FormUtils.camposEstaoVazios(txtNome, txtQuantidade, txtValor, txtCategoria)) {
+            if (FormUtils.camposVazios(txtNome, txtQuantidade, txtValor, txtCategoria)) {
                 JOptionPane.showMessageDialog(this, "Atenção: Preencha todos os campos!");
                 return; 
             }

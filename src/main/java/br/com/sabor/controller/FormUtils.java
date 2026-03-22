@@ -18,7 +18,7 @@ public class FormUtils {
     }
     
     //método para verificar se algum campo esta vazio
-    public static boolean camposEstaoVazios(javax.swing.JTextField... campos) {
+    public static boolean camposVazios(javax.swing.JTextField... campos) {
         for (javax.swing.JTextField campo : campos) {
             if (campo.getText().trim().isEmpty()) {
                 campo.requestFocus(); 

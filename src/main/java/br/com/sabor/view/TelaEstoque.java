@@ -7,7 +7,11 @@ package br.com.sabor.view;
 import br.com.sabor.controller.Navegador;
 import br.com.sabor.dao.ProdutoDAO;
 import br.com.sabor.model.Produto;
+import java.awt.Color;
+import java.awt.Component;
 import java.util.List;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class TelaEstoque extends javax.swing.JFrame {
 
@@ -17,28 +21,59 @@ public class TelaEstoque extends javax.swing.JFrame {
     public TelaEstoque() {
         initComponents();
         atualizarTabela();
+        configurarCoresTabela();
     }
 
     public void atualizarTabela() {
-        // 1. Pega o modelo da sua JTable
         javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblProduto.getModel();
 
-        // 2. Limpa tudo o que tem nela agora (para não duplicar quando você recarregar)
         modelo.setRowCount(0);
 
-        // 3. Busca a lista do banco usando o SEU método
         ProdutoDAO dao = new ProdutoDAO();
         List<Produto> lista = dao.listarTodos();
 
-        // 4. Preenche linha por linha
         for (Produto p : lista) {
             modelo.addRow(new Object[]{
                 p.getNomeProduto(),
+                p.getCategoria().getNome(),
                 p.getQuantidade(),
-                p.getValorUni(),
-                p.getCategoria().getNome() // Pega o nome da categoria que está ligada ao produto
+                p.getValorUni()
             });
         }
+    }
+
+    public void configurarCoresTabela() {
+        tblProduto.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                c.setForeground(Color.BLACK);
+
+                if (column == 2 && value != null) {
+                    try {
+                        double qtd = Double.parseDouble(value.toString());
+
+                        if (qtd < 0) {
+                            c.setForeground(Color.RED);
+                        } else if (qtd < 200) {
+                            c.setForeground(Color.ORANGE);
+                        }
+                    } catch (Exception e) {
+
+                    }
+                }
+
+                if (isSelected) {
+                    c.setBackground(table.getSelectionBackground());
+                } else {
+                    c.setBackground(table.getBackground());
+                }
+
+                return c;
+            }
+        });
     }
 
     /**
@@ -331,7 +366,7 @@ public class TelaEstoque extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTelaInicialEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTelaInicialEActionPerformed
-       Navegador.navegar(this, new TelaInicial());
+        Navegador.navegar(this, new TelaInicial());
 
     }//GEN-LAST:event_btnTelaInicialEActionPerformed
 
@@ -357,8 +392,8 @@ public class TelaEstoque extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNovoItemActionPerformed
 
     private void btnMoviActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoviActionPerformed
-      RegistrarMovi rm = new RegistrarMovi();
-      rm.setVisible(true);
+        RegistrarMovi rm = new RegistrarMovi();
+        rm.setVisible(true);
     }//GEN-LAST:event_btnMoviActionPerformed
 
     /**
