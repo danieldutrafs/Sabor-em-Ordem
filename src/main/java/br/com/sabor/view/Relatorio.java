@@ -5,6 +5,7 @@
 package br.com.sabor.view;
 
 import br.com.sabor.controller.Navegador;
+import java.util.List;
 
 /**
  *
@@ -17,6 +18,70 @@ public class Relatorio extends javax.swing.JFrame {
      */
     public Relatorio() {
         initComponents();
+        atualizarRelatorio();
+    }
+
+    public void atualizarRelatorio() {
+    try {
+        br.com.sabor.dao.EncomendaDAO dao = new br.com.sabor.dao.EncomendaDAO();
+        
+        // Busca todas as vendas para garantir que os labels saiam do zero
+        List<br.com.sabor.model.Encomenda> vendas = dao.listarTodos();
+
+        double financeiro = 0;
+        int totalItens = 0;
+
+        if (vendas != null) {
+            for (br.com.sabor.model.Encomenda v : vendas) {
+                if (v.getListaItens() != null) {
+                    for (br.com.sabor.model.ItemEncomenda item : v.getListaItens()) {
+                        totalItens += item.getQuantidadeItem();
+                        
+                        // CORREÇÃO DO ERRO DOUBLE: Verifica se o objeto é nulo antes de somar
+                        Double precoNoBanco = item.getPrecoMomento();
+                        double precoFinal = (precoNoBanco != null) ? precoNoBanco : 0.0;
+                        
+                        financeiro += (precoFinal * item.getQuantidadeItem());
+                    }
+                }
+            }
+        }
+
+        // Atualiza os labels com os valores calculados
+        lblTotalVendas.setText(String.format("R$ %.2f", financeiro));
+        lblPedidos.setText(String.valueOf(vendas.size()));
+        lblVendas.setText(String.valueOf(vendas.size()));
+        lblTotalItens.setText(String.valueOf(totalItens));
+
+        // Atualiza a tabela de produtos mais vendidos
+        carregarTabelaMaisVendidos();
+        
+    } catch (Exception e) {
+        System.err.println("Erro ao atualizar relatório: " + e.getMessage());
+    }
+}
+
+    public void carregarTabelaMaisVendidos() {
+        br.com.sabor.dao.EncomendaDAO dao = new br.com.sabor.dao.EncomendaDAO();
+        List<Object[]> lista = dao.buscarProdutosMaisVendidos();
+
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblMaisVendidos.getModel();
+        modelo.setNumRows(0); // Limpa a tabela
+
+        for (Object[] linha : lista) {
+            Object valorBruto = linha[2];
+            double subtotal = 0;
+
+            if (valorBruto != null) {
+                subtotal = Double.parseDouble(valorBruto.toString());
+            }
+
+            modelo.addRow(new Object[]{
+                linha[0],
+                linha[1],
+                String.format("R$ %.2f", subtotal)
+            });
+        }
     }
 
     /**
@@ -37,18 +102,22 @@ public class Relatorio extends javax.swing.JFrame {
         btnClientesE = new javax.swing.JButton();
         btnRelatorioE = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblMaisVendidos = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
+        lblTotalVendas = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
+        lblPedidos = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
+        lblVendas = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        lblTotalItens = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -146,8 +215,8 @@ public class Relatorio extends javax.swing.JFrame {
                 .addContainerGap(108, Short.MAX_VALUE))
         );
 
-        jTable1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93), 2));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblMaisVendidos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93), 2));
+        tblMaisVendidos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -155,7 +224,7 @@ public class Relatorio extends javax.swing.JFrame {
                 "Produto", "Quantidade", "Subtotal"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblMaisVendidos);
 
         jPanel3.setBackground(new java.awt.Color(197, 107, 107));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93), 3));
@@ -183,99 +252,55 @@ public class Relatorio extends javax.swing.JFrame {
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("Produtos:");
+        jLabel5.setText("Produtos mais vendidos:");
 
         jPanel4.setBackground(new java.awt.Color(204, 204, 204));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93), 2));
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Total em vendas");
+        jPanel4.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addContainerGap(7, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addContainerGap(81, Short.MAX_VALUE))
-        );
+        lblTotalVendas.setForeground(new java.awt.Color(0, 0, 0));
+        lblTotalVendas.setText("jLabel8");
+        jPanel4.add(lblTotalVendas, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 70, 20));
 
         jPanel5.setBackground(new java.awt.Color(204, 204, 204));
         jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93), 2));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setText("Pedidos");
+        jPanel5.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 8, -1, -1));
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel6)
-                .addContainerGap(30, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel6)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        lblPedidos.setForeground(new java.awt.Color(0, 0, 0));
+        lblPedidos.setText("jLabel8");
+        jPanel5.add(lblPedidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 50, 40));
 
         jPanel6.setBackground(new java.awt.Color(204, 204, 204));
         jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93), 2));
+        jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel7.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel7.setText("Vendas");
+        jLabel7.setText("Total de Vendas");
+        jPanel6.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, 30));
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(jLabel7)
-                .addContainerGap(32, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel7)
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
+        lblVendas.setForeground(new java.awt.Color(0, 0, 0));
+        lblVendas.setText("jLabel8");
+        jPanel6.add(lblVendas, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 40, -1, 20));
 
         jPanel7.setBackground(new java.awt.Color(204, 204, 204));
         jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93), 2));
+        jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Total de itens");
+        jPanel7.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(16, 8, -1, -1));
 
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel3)
-                .addContainerGap(15, Short.MAX_VALUE))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
+        lblTotalItens.setForeground(new java.awt.Color(0, 0, 0));
+        lblTotalItens.setText("jLabel8");
+        jPanel7.add(lblTotalItens, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, -1, 20));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -285,25 +310,24 @@ public class Relatorio extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(34, 34, 34)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(31, 31, 31)
-                                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(37, 37, 37)
-                                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
-                                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(10, 10, 10))
+                                        .addGap(15, 15, 15)
+                                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1)))
@@ -316,11 +340,12 @@ public class Relatorio extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -347,19 +372,19 @@ public class Relatorio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTelaInicialTIActionPerformed
 
     private void btnEstoqueEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstoqueEActionPerformed
-         Navegador.navegar(this, new TelaEstoque());
+        Navegador.navegar(this, new TelaEstoque());
     }//GEN-LAST:event_btnEstoqueEActionPerformed
 
     private void btnEncomendaEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEncomendaEActionPerformed
-        Navegador.navegar(this, new Encomendas());
+        Navegador.navegar(this, new TelaEncomendas(null));
     }//GEN-LAST:event_btnEncomendaEActionPerformed
 
     private void btnClientesEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesEActionPerformed
-        Navegador.navegar(this, new Clientes());
+        Navegador.navegar(this, new TelaClientes());
     }//GEN-LAST:event_btnClientesEActionPerformed
 
     private void btnRelatorioEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioEActionPerformed
-     
+
     }//GEN-LAST:event_btnRelatorioEActionPerformed
 
     /**
@@ -418,6 +443,10 @@ public class Relatorio extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lblPedidos;
+    private javax.swing.JLabel lblTotalItens;
+    private javax.swing.JLabel lblTotalVendas;
+    private javax.swing.JLabel lblVendas;
+    private javax.swing.JTable tblMaisVendidos;
     // End of variables declaration//GEN-END:variables
 }

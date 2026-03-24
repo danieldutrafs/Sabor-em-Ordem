@@ -21,6 +21,7 @@ public class TelaEstoque extends javax.swing.JFrame {
     public TelaEstoque() {
         initComponents();
         atualizarTabela();
+        calcularValorFinanceiroTotal();
         configurarCoresTabela();
     }
 
@@ -76,6 +77,23 @@ public class TelaEstoque extends javax.swing.JFrame {
         });
     }
 
+    public void calcularValorFinanceiroTotal() {
+        double valorTotalGeral = 0;
+
+        // busca todos os produtos do banco
+        br.com.sabor.dao.ProdutoDAO dao = new br.com.sabor.dao.ProdutoDAO();
+        List<br.com.sabor.model.Produto> lista = dao.listarTodos();
+
+        // soma o (Preço * Quantidade) de cada um
+        for (br.com.sabor.model.Produto p : lista) {
+            // Regra de segurança: só soma se a quantidade for positiva
+            if (p.getQuantidade() > 0) {
+                valorTotalGeral += (p.getValorUni() * p.getQuantidade());
+            }
+        }
+        lblValorTotal.setText(String.format("R$ %.2f", valorTotalGeral));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -95,15 +113,15 @@ public class TelaEstoque extends javax.swing.JFrame {
         btnClientesE = new javax.swing.JButton();
         btnRelatorioE = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        txtBuscarProduto = new javax.swing.JTextField();
+        txtBuscar = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
+        lblValorTotal = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProduto = new javax.swing.JTable();
         btnMovi = new javax.swing.JButton();
         btnNovoItem = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
 
         jLabel3.setText("jLabel3");
 
@@ -209,55 +227,50 @@ public class TelaEstoque extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Estoque de Salgados");
 
-        txtBuscarProduto.setBackground(new java.awt.Color(255, 255, 255));
-        txtBuscarProduto.setForeground(new java.awt.Color(0, 0, 0));
-        txtBuscarProduto.setText("Buscar Produto");
-        txtBuscarProduto.setOpaque(true);
+        txtBuscar.setBackground(new java.awt.Color(255, 255, 255));
+        txtBuscar.setForeground(new java.awt.Color(0, 0, 0));
+        txtBuscar.setOpaque(true);
+        txtBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBuscarActionPerformed(evt);
+            }
+        });
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyReleased(evt);
+            }
+        });
 
         jPanel2.setBackground(new java.awt.Color(248, 245, 240));
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93)));
 
         jLabel4.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText(" Valor Total:");
+
+        lblValorTotal.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblValorTotal.setForeground(new java.awt.Color(191, 160, 93));
+        lblValorTotal.setText("RS 0,0");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGap(49, 49, 49)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel4)
+                    .addComponent(lblValorTotal))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel4)
-                .addContainerGap(55, Short.MAX_VALUE))
-        );
-
-        jPanel3.setBackground(new java.awt.Color(248, 245, 240));
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93)));
-
-        jLabel5.setBackground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("Total Itens:");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel5)
-                .addContainerGap(15, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel5)
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblValorTotal)
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         tblProduto.setBackground(new java.awt.Color(248, 245, 240));
@@ -292,14 +305,17 @@ public class TelaEstoque extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel6.setText("Busxar Produto por nome:");
+
         jLayeredPane1.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(txtBuscarProduto, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(txtBuscar, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jPanel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(jPanel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jScrollPane1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(btnMovi, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(btnNovoItem, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(jLabel6, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
         jLayeredPane1.setLayout(jLayeredPane1Layout);
@@ -312,13 +328,13 @@ public class TelaEstoque extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jLayeredPane1Layout.createSequentialGroup()
-                                .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtBuscarProduto))
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtBuscar))
+                                    .addComponent(jLabel6))
+                                .addGap(26, 26, 26)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 19, Short.MAX_VALUE))
                     .addGroup(jLayeredPane1Layout.createSequentialGroup()
@@ -334,12 +350,13 @@ public class TelaEstoque extends javax.swing.JFrame {
             .addGroup(jLayeredPane1Layout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jLayeredPane1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtBuscarProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6)
+                        .addGap(3, 3, 3)
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -375,11 +392,11 @@ public class TelaEstoque extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEstoqueEActionPerformed
 
     private void btnEncomendasEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEncomendasEActionPerformed
-        Navegador.navegar(this, new Encomendas());
+        Navegador.navegar(this, new TelaEncomendas(null));
     }//GEN-LAST:event_btnEncomendasEActionPerformed
 
     private void btnClientesEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesEActionPerformed
-        Navegador.navegar(this, new Clientes());
+        Navegador.navegar(this, new TelaClientes());
     }//GEN-LAST:event_btnClientesEActionPerformed
 
     private void btnRelatorioEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioEActionPerformed
@@ -387,14 +404,46 @@ public class TelaEstoque extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRelatorioEActionPerformed
 
     private void btnNovoItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoItemActionPerformed
-        CadastrarItem telaCI = new CadastrarItem();
-        telaCI.setVisible(true);
+       CadastrarItem telaCad = new CadastrarItem(); 
+
+    telaCad.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosed(java.awt.event.WindowEvent e) {
+            atualizarTabela();               
+            calcularValorFinanceiroTotal(); 
+        }
+    });
+
+        telaCad.setVisible(true);
     }//GEN-LAST:event_btnNovoItemActionPerformed
 
     private void btnMoviActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoviActionPerformed
         RegistrarMovi rm = new RegistrarMovi();
         rm.setVisible(true);
     }//GEN-LAST:event_btnMoviActionPerformed
+
+    private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarActionPerformed
+
+    private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
+        String textoFiltro = txtBuscar.getText();
+
+        br.com.sabor.dao.ProdutoDAO dao = new br.com.sabor.dao.ProdutoDAO();
+        List<br.com.sabor.model.Produto> listaFiltrada = dao.buscarPorNome(textoFiltro);
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblProduto.getModel();
+
+        modelo.setNumRows(0);
+
+        for (br.com.sabor.model.Produto p : listaFiltrada) {
+            modelo.addRow(new Object[]{
+                p.getNomeProduto(), 
+                p.getCategoria().getNome(),
+                p.getQuantidade(), 
+                String.format("R$ %.2f", p.getValorUni()) 
+            });
+        }
+    }//GEN-LAST:event_txtBuscarKeyReleased
 
     /**
      * @param args the command line arguments
@@ -443,13 +492,13 @@ public class TelaEstoque extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblValorTotal;
     private javax.swing.JTable tblProduto;
-    private javax.swing.JTextField txtBuscarProduto;
+    private javax.swing.JTextField txtBuscar;
     // End of variables declaration//GEN-END:variables
 }

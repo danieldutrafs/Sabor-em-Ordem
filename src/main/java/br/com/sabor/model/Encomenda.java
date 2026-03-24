@@ -1,5 +1,6 @@
 package br.com.sabor.model;
 
+import java.math.BigDecimal;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -8,36 +9,39 @@ import java.util.ArrayList;
 @Entity
 @Table(name = "encomenda")
 public class Encomenda {
-    
-    @Id 
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "cliente_id") // Relacionamento, não @Column!
     private Clientes cliente;
-    @OneToMany(mappedBy = "encomenda", cascade = CascadeType.ALL)
-    private List<ItemEncomenda> listaItens;
-    @Column (name = "data_entrega")
+    @OneToMany(mappedBy = "encomenda", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+private List<ItemEncomenda> listaItens = new ArrayList<>();
+    @Column(name = "data_entrega")
     private LocalDate dataEntrega;
     @Column(name = "status_encomenda")
     private String status;
     @Column(name = "valor_entrada")
     private double valorEntrada;
-    
+
     private double frete;
-    private String destinatario; 
+    private String destinatario;
     private String endereco;
-    
+
     @Column(name = "is_retirada")
     private boolean isRetirada;
-    @Column (name = "forma_pagamento")
+    @Column(name = "forma_pagamento")
     private String formaPagamento;
-
-    public Encomenda(){
-       
-    }
     
-    public Encomenda(int Long, Clientes cliente, List<ItemEncomenda> listaItens, LocalDate dataEntrega, String status, double valorEntrada, double frete, String destinatario, String endereco, boolean isRetirada, String formaPagamento) {
+    @Column(name = "valor_total", precision = 10, scale = 2)
+    private BigDecimal valorTotalPedido;
+
+    public Encomenda() {
+
+    }
+
+    public Encomenda(Long id, Clientes cliente, List<ItemEncomenda> listaItens, LocalDate dataEntrega, String status, double valorEntrada, double frete, String destinatario, String endereco, boolean isRetirada, String formaPagamento, BigDecimal valorTotalPedido) {
         this.id = id;
         this.cliente = cliente;
         this.listaItens = listaItens;
@@ -49,6 +53,7 @@ public class Encomenda {
         this.endereco = endereco;
         this.isRetirada = isRetirada;
         this.formaPagamento = formaPagamento;
+        this.valorTotalPedido = valorTotalPedido;
     }
 
     public Long getId() {
@@ -138,26 +143,36 @@ public class Encomenda {
     public void setFormaPagamento(String formaPagamento) {
         this.formaPagamento = formaPagamento;
     }
-
     
-    public double calcularTotalItens(){
+    public BigDecimal getValorTotalPedido() {
+        return valorTotalPedido;
+    }
+
+    public void setValorTotalPedido(BigDecimal valorTotalPedido) {
+        this.valorTotalPedido = valorTotalPedido;
+    }
+
+    public double calcularTotalItens() {
         double soma = 0;
-        for(ItemEncomenda item : listaItens){
-            soma += item.calcularSubtotal();
+        if (this.listaItens != null && !this.listaItens.isEmpty()) {
+            for (ItemEncomenda item : listaItens) {
+                soma += item.calcularSubtotal();
+            }
         }
         return soma;
     }
-    
-    public double calcularValorFinal(){
+
+    public double getValorTotal() {
         return calcularTotalItens() + this.frete;
     }
-    
-    public double calcularValorDevedor(){
-        return calcularValorFinal() - this.valorEntrada;
+
+    public double getValorAPagar() {
+        return getValorTotal() - this.valorEntrada;
     }
-    
+
     public String gerarResumo() {
         String entregaStr = isRetirada ? "Retirada" : "Entrega em: " + this.endereco;
         return "Pedido #" + id + " | " + destinatario + " | " + entregaStr + " | Status: " + status;
     }
+
 }

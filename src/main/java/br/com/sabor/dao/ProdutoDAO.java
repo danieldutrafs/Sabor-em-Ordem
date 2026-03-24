@@ -65,4 +65,27 @@ public class ProdutoDAO {
         em.close();
         return produtos;
     }
+
+    public List<Produto> buscarPorNome(String nomeBusca) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            
+            return em.createQuery("SELECT p FROM Produto p WHERE p.nomeProduto LIKE :n",
+                    br.com.sabor.model.Produto.class)
+                    .setParameter("n", "%" + nomeBusca + "%")
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Produto> listarEstoqueBaixo() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT p FROM Produto p WHERE p.quantidade < 200",
+                    br.com.sabor.model.Produto.class).getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }

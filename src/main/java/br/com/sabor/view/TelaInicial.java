@@ -6,6 +6,7 @@ package br.com.sabor.view;
 
 import br.com.sabor.controller.Navegador;
 import java.awt.CardLayout;
+import java.util.List;
 import javax.swing.JPanel;
 
 /**
@@ -21,7 +22,39 @@ public class TelaInicial extends javax.swing.JFrame {
      */
     public TelaInicial() {
         initComponents();
-        // Força transparência total
+        atualizarTabelaEstoqueBaixo();
+        exibirFaturamento();
+    }
+
+    //metodo para tabela de estoque abixo
+    public void atualizarTabelaEstoqueBaixo() {
+        br.com.sabor.dao.ProdutoDAO dao = new br.com.sabor.dao.ProdutoDAO();
+        List<br.com.sabor.model.Produto> lista = dao.listarEstoqueBaixo();
+        javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) tblProdutoBaixo.getModel();
+
+        modelo.setNumRows(0);
+
+        for (br.com.sabor.model.Produto p : lista) {
+            double subtotal = p.getValorUni() * p.getQuantidade();
+
+            modelo.addRow(new Object[]{
+                p.getNomeProduto(),
+                p.getQuantidade(),
+                String.format("R$ %.2f", subtotal)
+            });
+        }
+    }
+
+    private void exibirFaturamento() {
+        try {
+            br.com.sabor.dao.EncomendaDAO dao = new br.com.sabor.dao.EncomendaDAO();
+            double total = dao.consultarFaturamentoSemanal();
+
+            // Verifique se o nome da sua label é lblFaturamento ou outro
+            lblFaturamento.setText(String.format("R$ %.2f", total));
+        } catch (Exception e) {
+            lblFaturamento.setText("R$ 0,00");
+        }
     }
 
     /**
@@ -46,10 +79,10 @@ public class TelaInicial extends javax.swing.JFrame {
         btnNovaVendaTI = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        lblFaturamento = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblProdutoBaixo = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -191,10 +224,10 @@ public class TelaInicial extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Faturamento:");
 
-        jLabel5.setBackground(new java.awt.Color(191, 160, 93));
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 40)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(191, 160, 93));
-        jLabel5.setText("RS 00,00");
+        lblFaturamento.setBackground(new java.awt.Color(191, 160, 93));
+        lblFaturamento.setFont(new java.awt.Font("Segoe UI", 1, 40)); // NOI18N
+        lblFaturamento.setForeground(new java.awt.Color(191, 160, 93));
+        lblFaturamento.setText("RS 00,00");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -203,7 +236,7 @@ public class TelaInicial extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(115, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
+                    .addComponent(lblFaturamento)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jLabel3)))
@@ -214,11 +247,11 @@ public class TelaInicial extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5)
+                .addComponent(lblFaturamento)
                 .addGap(0, 16, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblProdutoBaixo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -226,7 +259,7 @@ public class TelaInicial extends javax.swing.JFrame {
                 "Produto", "Quantidade", "Subtotal"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblProdutoBaixo);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
@@ -304,17 +337,17 @@ public class TelaInicial extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovaVendaTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovaVendaTIActionPerformed
-        CadastrarVenda dialog = new CadastrarVenda(this, true);
+        CadastrarVenda dialog = new CadastrarVenda(new javax.swing.JFrame(), true, null);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_btnNovaVendaTIActionPerformed
 
     private void btnRelatoriosTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatoriosTIActionPerformed
-         Navegador.navegar(this, new Relatorio());
+        Navegador.navegar(this, new Relatorio());
     }//GEN-LAST:event_btnRelatoriosTIActionPerformed
 
     private void btnEstoqueTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstoqueTIActionPerformed
-       Navegador.navegar(this, new TelaEstoque());
+        Navegador.navegar(this, new TelaEstoque());
     }//GEN-LAST:event_btnEstoqueTIActionPerformed
 
     private void btnTelaInicialTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTelaInicialTIActionPerformed
@@ -322,11 +355,11 @@ public class TelaInicial extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTelaInicialTIActionPerformed
 
     private void btnEncomendasTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEncomendasTIActionPerformed
-       Navegador.navegar(this, new Encomendas());
+        Navegador.navegar(this, new TelaEncomendas(null));
     }//GEN-LAST:event_btnEncomendasTIActionPerformed
 
     private void TelaClientesTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TelaClientesTIActionPerformed
-        Navegador.navegar(this, new Clientes());
+        Navegador.navegar(this, new TelaClientes());
     }//GEN-LAST:event_TelaClientesTIActionPerformed
 
     /**
@@ -375,13 +408,13 @@ public class TelaInicial extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lblFaturamento;
     private javax.swing.JLayeredPane pFundo;
+    private javax.swing.JTable tblProdutoBaixo;
     // End of variables declaration//GEN-END:variables
 }

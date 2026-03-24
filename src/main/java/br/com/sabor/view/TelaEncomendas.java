@@ -5,96 +5,159 @@
 package br.com.sabor.view;
 
 import br.com.sabor.controller.Navegador;
+import br.com.sabor.dao.EncomendaDAO;
+import br.com.sabor.model.Encomenda;
+import br.com.sabor.model.ItemEncomenda;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import br.com.sabor.view.CadastrarVenda;
+import br.com.sabor.view.EditarVenda;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author dutra
  */
-public class Encomendas extends javax.swing.JFrame {
+public class TelaEncomendas extends javax.swing.JFrame {
 
     /**
      * Creates new form Encomendas
      */
-    public Encomendas() {
+    private br.com.sabor.model.Encomenda encomenda;
+
+    public TelaEncomendas(br.com.sabor.model.Encomenda enco) {
         initComponents();
-
-        // "Sacudida" final para o scroll aparecer
+        atualizarListaCards();
+        painelLista.setLayout(new javax.swing.BoxLayout(painelLista, javax.swing.BoxLayout.Y_AXIS));
         painelLista.revalidate();
         painelLista.repaint();
 
     }
-    //aumentar tamanho das label
 
-    private void adicionarCard(String nome, String aPagar, String data, String saida, String valorTotal, String status) {
-        javax.swing.JPanel card = new javax.swing.JPanel();
-        card.setBackground(new java.awt.Color(255, 249, 230));
-        card.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 153, 0), 2, true));
+    private void gerarComponenteCard(String nomeCliente, String pendencia, String dataEntrega, String tipoSaida, double valorFinal, String situacao, br.com.sabor.model.Encomenda enco) {
+        // criação do Card
+        javax.swing.JPanel containerCard = new javax.swing.JPanel();
+        containerCard.setBackground(new java.awt.Color(255, 249, 230));
+        containerCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 153, 0), 2, true));
 
-        // TRAVANDO O TAMANHO: Isso impede que o painelLista "achate" o card
-        java.awt.Dimension d = new java.awt.Dimension(280, 150);
-        card.setPreferredSize(new java.awt.Dimension(270, 150));
-        card.setMinimumSize(new java.awt.Dimension(270, 150));
-        // O Short.MAX_VALUE faz ele esticar para cobrir o fundo cinza
-        card.setMaximumSize(new java.awt.Dimension(Short.MAX_VALUE, 150));// ESSA LINHA RESOLVE O BUG
-        card.setLayout(null);
+        containerCard.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                encomenda = enco; // sua variável global
+                for (java.awt.Component c : painelLista.getComponents()) {
+                    if (c instanceof javax.swing.JPanel) {
+                        c.setBackground(new java.awt.Color(255, 249, 230));
+                    }
+                }
+                containerCard.setBackground(new java.awt.Color(255, 215, 120));
+            }
+        });
 
-        // Título Cliente
-        javax.swing.JLabel lblCliente = new javax.swing.JLabel("Cliente: " + nome);
-        lblCliente.setFont(new java.awt.Font("Segoe UI", 1, 14));
-        lblCliente.setBounds(10, 5, 260, 25);
-        card.add(lblCliente);
+        containerCard.setPreferredSize(new java.awt.Dimension(270, 150));
+        containerCard.setMinimumSize(new java.awt.Dimension(270, 150));
+        containerCard.setMaximumSize(new java.awt.Dimension(Short.MAX_VALUE, 150));
+        containerCard.setLayout(null);
 
-        javax.swing.JSeparator sep = new javax.swing.JSeparator();
-        sep.setBounds(5, 32, 270, 2);
-        card.add(sep);
+        javax.swing.JLabel txtCliente = new javax.swing.JLabel("Cliente: " + nomeCliente);
+        txtCliente.setFont(new java.awt.Font("Segoe UI", 1, 14));
+        txtCliente.setBounds(10, 5, 260, 25);
+        containerCard.add(txtCliente);
 
-        // Coluna da Esquerda
-        card.add(criarLabel("A pagar: " + aPagar, 10, 40, 130));
-        card.add(criarLabel("Data: " + data, 10, 65, 130));
-        card.add(criarLabel("Saída: " + saida, 10, 90, 130));
+        javax.swing.JSeparator linhaDivisora = new javax.swing.JSeparator();
+        linhaDivisora.setBounds(5, 32, 270, 2);
+        containerCard.add(linhaDivisora);
 
-        // Status (Centralizado sobre o valor)
-        javax.swing.JLabel lblStatus = new javax.swing.JLabel(status);
-        lblStatus.setFont(new java.awt.Font("Segoe UI", 1, 12));
-        lblStatus.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblStatus.setBounds(150, 40, 120, 20); // Posição X ajustada
+        containerCard.add(montarTextoLabel("A pagar: R$ " + pendencia, 10, 40));
+        containerCard.add(montarTextoLabel("Data: " + dataEntrega, 10, 65));
+        containerCard.add(montarTextoLabel("Saída: " + tipoSaida, 10, 90));
 
-        if (status.equalsIgnoreCase("Concluído") || status.equalsIgnoreCase("Pronto")) {
-            lblStatus.setForeground(new java.awt.Color(0, 153, 51));
-        } else {
-            lblStatus.setForeground(java.awt.Color.RED);
-        }
-        card.add(lblStatus);
+        javax.swing.JLabel txtStatus = new javax.swing.JLabel(situacao.toUpperCase());
+        txtStatus.setFont(new java.awt.Font("Segoe UI", 1, 12));
+        txtStatus.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtStatus.setBounds(150, 40, 120, 20);
+        txtStatus.setForeground(situacao.equalsIgnoreCase("Concluído") ? new java.awt.Color(0, 153, 51) : java.awt.Color.RED);
+        containerCard.add(txtStatus);
 
-        // Painel de Valor Total
-        javax.swing.JPanel pnlValor = new javax.swing.JPanel();
-        pnlValor.setBackground(java.awt.Color.WHITE);
-        pnlValor.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 153, 0), 1));
-        pnlValor.setBounds(150, 60, 120, 65);
-        pnlValor.setLayout(new java.awt.GridLayout(2, 1));
+        javax.swing.JPanel blocoPreco = new javax.swing.JPanel();
+        blocoPreco.setBackground(java.awt.Color.WHITE);
+        blocoPreco.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 153, 0), 1));
+        blocoPreco.setBounds(150, 60, 120, 65);
+        blocoPreco.setLayout(new java.awt.GridLayout(2, 1));
 
-        javax.swing.JLabel vTitle = new javax.swing.JLabel("Valor total:", javax.swing.SwingConstants.CENTER);
-        javax.swing.JLabel vValue = new javax.swing.JLabel("R$ " + valorTotal, javax.swing.SwingConstants.CENTER);
-        vValue.setFont(new java.awt.Font("Segoe UI", 1, 13));
-        vValue.setForeground(new java.awt.Color(204, 153, 0));
+        javax.swing.JLabel tituloValor = new javax.swing.JLabel("Valor total:", javax.swing.SwingConstants.CENTER);
+        javax.swing.JLabel valorExibido = new javax.swing.JLabel(String.format("R$ %.2f", valorFinal), javax.swing.SwingConstants.CENTER);
+        valorExibido.setFont(new java.awt.Font("Segoe UI", 1, 14));
+        valorExibido.setForeground(new java.awt.Color(204, 153, 0));
 
-        pnlValor.add(vTitle);
-        pnlValor.add(vValue);
-        card.add(pnlValor);
+        blocoPreco.add(tituloValor);
+        blocoPreco.add(valorExibido);
+        containerCard.add(blocoPreco);
 
-        // Adição ao painelLista
-        painelLista.add(card);
+        painelLista.add(containerCard);
         painelLista.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
+    }
+
+    // MÉTODO AUXILIAR PARA CRIAR AS LABELS MENORES (O que estava faltando)
+    private javax.swing.JLabel montarTextoLabel(String texto, int x, int y) {
+        javax.swing.JLabel label = new javax.swing.JLabel(texto);
+        label.setBounds(x, y, 130, 20);
+        label.setFont(new java.awt.Font("Segoe UI", 0, 13));
+        return label;
+    }
+
+    public void atualizarListaCards() {
+        painelLista.removeAll();
+        painelLista.setLayout(new javax.swing.BoxLayout(painelLista, javax.swing.BoxLayout.Y_AXIS));
+
+        java.util.List<br.com.sabor.model.Encomenda> encomendas = new br.com.sabor.dao.EncomendaDAO().listarTodos();
+        java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (br.com.sabor.model.Encomenda e : encomendas) {
+            double total = e.getValorTotalPedido().doubleValue();
+            double entrada = e.getValorEntrada();
+            String pendenciaStr = String.format("%.2f", (total - entrada));
+            String dataStr = e.getDataEntrega().format(fmt);
+            String tipoSaida = e.isIsRetirada() ? "RETIRADA" : "ENTREGA";
+            String nome = (e.getCliente() != null) ? e.getCliente().getNomeCliente() : e.getDestinatario();
+
+            gerarComponenteCard(nome, pendenciaStr, dataStr, tipoSaida, total, e.getStatus(), e);
+        }
         painelLista.revalidate();
         painelLista.repaint();
     }
 
-// Método auxiliar (não esqueça de colar este também)
-    private javax.swing.JLabel criarLabel(String texto, int x, int y, int w) {
-        javax.swing.JLabel l = new javax.swing.JLabel(texto);
-        l.setBounds(x, y, w, 20);
-        l.setFont(new java.awt.Font("Segoe UI", 0, 11));
-        return l;
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        if (b) {
+            // Limpa e recarrega do banco assim que a tela de cadastro fecha
+            painelLista.removeAll();
+            atualizarListaCards();
+            painelLista.revalidate();
+            painelLista.repaint();
+        }
+    }
+
+    private void exibirEncomendasFiltradas(String status) {
+        painelLista.removeAll();
+        br.com.sabor.dao.EncomendaDAO dao = new br.com.sabor.dao.EncomendaDAO();
+        java.util.List<br.com.sabor.model.Encomenda> lista = dao.listarPorStatus(status);
+        java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (br.com.sabor.model.Encomenda e : lista) {
+            double total = e.getValorTotalPedido().doubleValue();
+            double entrada = e.getValorEntrada();
+            String pendenciaStr = String.format("%.2f", (total - entrada));
+            String dataStr = e.getDataEntrega().format(fmt);
+            String tipoSaida = e.isIsRetirada() ? "RETIRADA" : "ENTREGA";
+            String nome = (e.getCliente() != null) ? e.getCliente().getNomeCliente() : e.getDestinatario();
+
+            // Chama o seu método que desenha o card
+            gerarComponenteCard(nome, pendenciaStr, dataStr, tipoSaida, total, e.getStatus(), e);
+        }
+
+        painelLista.revalidate();
+        painelLista.repaint();
     }
 
     /**
@@ -122,8 +185,9 @@ public class Encomendas extends javax.swing.JFrame {
         btnProntos = new javax.swing.JButton();
         btnProducao = new javax.swing.JButton();
         btnTodos = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnNovaVenda = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -255,11 +319,16 @@ public class Encomendas extends javax.swing.JFrame {
         btnProntos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnProntos.setForeground(new java.awt.Color(0, 0, 0));
         btnProntos.setText("Prontos");
+        btnProntos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProntosActionPerformed(evt);
+            }
+        });
 
         btnProducao.setBackground(new java.awt.Color(255, 255, 255));
         btnProducao.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnProducao.setForeground(new java.awt.Color(0, 0, 0));
-        btnProducao.setText("Em produção");
+        btnProducao.setText("Pendente");
         btnProducao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnProducaoActionPerformed(evt);
@@ -281,13 +350,13 @@ public class Encomendas extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(229, Short.MAX_VALUE)
+                .addContainerGap(240, Short.MAX_VALUE)
                 .addComponent(btnTodos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnProducao)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnProntos)
-                .addContainerGap())
+                .addGap(18, 18, 18))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -302,16 +371,16 @@ public class Encomendas extends javax.swing.JFrame {
 
         jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(238, 62, 520, -1));
 
-        jButton3.setBackground(new java.awt.Color(255, 153, 153));
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(0, 0, 0));
-        jButton3.setText("Nova Venda");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnNovaVenda.setBackground(new java.awt.Color(255, 153, 153));
+        btnNovaVenda.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        btnNovaVenda.setForeground(new java.awt.Color(0, 0, 0));
+        btnNovaVenda.setText("Nova Venda");
+        btnNovaVenda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnNovaVendaActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 230, -1, -1));
+        jPanel2.add(btnNovaVenda, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 280, -1, -1));
 
         jButton5.setBackground(new java.awt.Color(255, 153, 153));
         jButton5.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
@@ -322,7 +391,18 @@ public class Encomendas extends javax.swing.JFrame {
                 jButton5ActionPerformed(evt);
             }
         });
-        jPanel2.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 320, -1, -1));
+        jPanel2.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 380, -1, -1));
+
+        jButton1.setBackground(new java.awt.Color(255, 153, 153));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(0, 0, 0));
+        jButton1.setText("Concluir");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 180, 140, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -347,11 +427,11 @@ public class Encomendas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEncomendaEActionPerformed
 
     private void btnEstoqueEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstoqueEActionPerformed
-       Navegador.navegar(this, new TelaEstoque());
+        Navegador.navegar(this, new TelaEstoque());
     }//GEN-LAST:event_btnEstoqueEActionPerformed
 
     private void btnClientesEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesEActionPerformed
-       Navegador.navegar(this, new Clientes());
+        Navegador.navegar(this, new TelaClientes());
     }//GEN-LAST:event_btnClientesEActionPerformed
 
     private void btnRelatorioEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioEActionPerformed
@@ -359,23 +439,73 @@ public class Encomendas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRelatorioEActionPerformed
 
     private void btnTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTodosActionPerformed
-        // TODO add your handling code here:
+        atualizarListaCards();
     }//GEN-LAST:event_btnTodosActionPerformed
 
     private void btnProducaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProducaoActionPerformed
-        // TODO add your handling code here:
+        exibirEncomendasFiltradas("Pendente");
     }//GEN-LAST:event_btnProducaoActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        CadastrarVenda dialog = new CadastrarVenda(this, true);
+    private void btnNovaVendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovaVendaActionPerformed
+        CadastrarVenda dialog = new CadastrarVenda(new javax.swing.JFrame(), true, null);
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnNovaVendaActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-       EditarVenda ev = new EditarVenda();
-       ev.setVisible(true);
+        if (this.encomenda != null) {
+            EditarVenda ev = new EditarVenda();
+
+            // 1. Preenche os campos
+            ev.preencherCampos((br.com.sabor.model.Encomenda) this.encomenda);
+
+            // 2. Adiciona o Listener ANTES de mostrar a tela
+            ev.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    atualizarListaCards();
+                }
+            });
+
+            // 3. Só agora mostra a tela
+            ev.setVisible(true);
+
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, clique em um card amarelo antes de editar.");
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        if (encomenda == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecione uma encomenda na lista primeiro!");
+            return;
+        }
+
+        try {
+            br.com.sabor.dao.EncomendaDAO dao = new br.com.sabor.dao.EncomendaDAO();
+
+            // Atualiza o status do objeto selecionado
+            encomenda.setStatus("Concluído");
+
+            // Salva a alteração no banco de dados
+            dao.salvarAlteracoes(encomenda);
+
+            javax.swing.JOptionPane.showMessageDialog(this, "Encomenda marcada como concluída!");
+
+            // Limpa a seleção e recarrega a lista para mostrar a mudança
+            encomenda = null;
+            atualizarListaCards();
+
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao atualizar: " + e.getMessage());
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnProntosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProntosActionPerformed
+        exibirEncomendasFiltradas("Concluído");
+    }//GEN-LAST:event_btnProntosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -391,23 +521,32 @@ public class Encomendas extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Encomendas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaEncomendas.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Encomendas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaEncomendas.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Encomendas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaEncomendas.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Encomendas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaEncomendas.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Encomendas().setVisible(true);
+                new TelaEncomendas(null).setVisible(true);
             }
         });
     }
@@ -416,12 +555,13 @@ public class Encomendas extends javax.swing.JFrame {
     private javax.swing.JButton btnClientesE;
     private javax.swing.JButton btnEncomendaE;
     private javax.swing.JButton btnEstoqueE;
+    private javax.swing.JButton btnNovaVenda;
     private javax.swing.JButton btnProducao;
     private javax.swing.JButton btnProntos;
     private javax.swing.JButton btnRelatorioE;
     private javax.swing.JButton btnTelaInicialTI;
     private javax.swing.JButton btnTodos;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

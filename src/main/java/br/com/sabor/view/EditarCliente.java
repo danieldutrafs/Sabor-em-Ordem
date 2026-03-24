@@ -13,8 +13,20 @@ public class EditarCliente extends javax.swing.JFrame {
     /**
      * Creates new form EditarCliente
      */
+    private Long idParaAlterar = null;
+
     public EditarCliente() {
         initComponents();
+    }
+
+    public void preencherCamposParaEdicao(br.com.sabor.model.Clientes c) {
+        // Certifique-se que os nomes dos seus campos (txt...) estão corretos
+        txtNome.setText(c.getNomeCliente());
+        txtEndereco.setText(c.getEndereco());
+        txtTelefone.setText(c.getTelefone());
+
+        // Salve o ID em uma variável global da tela para poder salvar depois
+        this.idParaAlterar = c.getId();
     }
 
     /**
@@ -30,11 +42,11 @@ public class EditarCliente extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtNomeClienteEd = new javax.swing.JTextField();
+        txtNome = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        txtTelefoneEd = new javax.swing.JTextField();
+        txtTelefone = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtEnderecoEd = new javax.swing.JTextField();
+        txtEndereco = new javax.swing.JTextField();
         btnCancelarEd = new javax.swing.JButton();
         btnSalvarEd = new javax.swing.JButton();
 
@@ -69,22 +81,22 @@ public class EditarCliente extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Nome:");
 
-        txtNomeClienteEd.setBackground(new java.awt.Color(153, 153, 153));
+        txtNome.setBackground(new java.awt.Color(153, 153, 153));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Telefone:");
 
-        txtTelefoneEd.setBackground(new java.awt.Color(153, 153, 153));
+        txtTelefone.setBackground(new java.awt.Color(153, 153, 153));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Endereço:");
 
-        txtEnderecoEd.setBackground(new java.awt.Color(153, 153, 153));
-        txtEnderecoEd.addActionListener(new java.awt.event.ActionListener() {
+        txtEndereco.setBackground(new java.awt.Color(153, 153, 153));
+        txtEndereco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtEnderecoEdActionPerformed(evt);
+                txtEnderecoActionPerformed(evt);
             }
         });
 
@@ -102,14 +114,19 @@ public class EditarCliente extends javax.swing.JFrame {
         btnSalvarEd.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         btnSalvarEd.setForeground(new java.awt.Color(0, 0, 0));
         btnSalvarEd.setText("Salvar");
+        btnSalvarEd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarEdActionPerformed(evt);
+            }
+        });
 
         jLayeredPane1.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(txtNomeClienteEd, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(txtNome, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(txtTelefoneEd, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(txtTelefone, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jLabel4, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(txtEnderecoEd, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(txtEndereco, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(btnCancelarEd, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(btnSalvarEd, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
@@ -126,16 +143,16 @@ public class EditarCliente extends javax.swing.JFrame {
                             .addGroup(jLayeredPane1Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtEnderecoEd))
+                                .addComponent(txtEndereco))
                             .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(jLayeredPane1Layout.createSequentialGroup()
                                     .addComponent(jLabel3)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtTelefoneEd, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jLayeredPane1Layout.createSequentialGroup()
                                     .addComponent(jLabel2)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtNomeClienteEd, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addContainerGap(23, Short.MAX_VALUE))
                     .addGroup(jLayeredPane1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -151,15 +168,15 @@ public class EditarCliente extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtNomeClienteEd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtTelefoneEd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(32, 32, 32)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtEnderecoEd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelarEd)
@@ -181,13 +198,47 @@ public class EditarCliente extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtEnderecoEdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEnderecoEdActionPerformed
+    private void txtEnderecoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEnderecoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtEnderecoEdActionPerformed
+    }//GEN-LAST:event_txtEnderecoActionPerformed
 
     private void btnCancelarEdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarEdActionPerformed
-       this.dispose();
+        this.dispose();
     }//GEN-LAST:event_btnCancelarEdActionPerformed
+
+    private void btnSalvarEdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarEdActionPerformed
+        try {
+            // 1. Instancia o DAO e o Model de Cliente
+            br.com.sabor.dao.ClienteDAO dao = new br.com.sabor.dao.ClienteDAO();
+            br.com.sabor.model.Clientes cliente = new br.com.sabor.model.Clientes();
+
+            // 2. Pega os dados das caixas de texto (ajuste os nomes txt se necessário)
+            cliente.setNomeCliente(txtNome.getText());
+            cliente.setEndereco(txtEndereco.getText());
+            cliente.setTelefone(txtTelefone.getText());
+
+            // 3. Lógica de Decisão: Editar ou Salvar Novo?
+            if (this.idParaAlterar != null) {
+                // Se o ID existe, estamos alterando um cliente existente
+                cliente.setId(this.idParaAlterar);
+                dao.editar(cliente); // Método merge no DAO
+                javax.swing.JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
+            } else {
+                // Se o ID for null, é um cliente novo sendo cadastrado
+                dao.salvar(cliente); // Método persist no DAO
+                javax.swing.JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!");
+            }
+
+            // 4. Limpa a variável de controle e FECHA a tela
+            // O comando dispose() faz o WindowListener da tela anterior rodar!
+            this.idParaAlterar = null;
+            this.dispose();
+
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro ao processar: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnSalvarEdActionPerformed
 
     /**
      * @param args the command line arguments
@@ -233,8 +284,8 @@ public class EditarCliente extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtEnderecoEd;
-    private javax.swing.JTextField txtNomeClienteEd;
-    private javax.swing.JTextField txtTelefoneEd;
+    private javax.swing.JTextField txtEndereco;
+    private javax.swing.JTextField txtNome;
+    private javax.swing.JTextField txtTelefone;
     // End of variables declaration//GEN-END:variables
 }

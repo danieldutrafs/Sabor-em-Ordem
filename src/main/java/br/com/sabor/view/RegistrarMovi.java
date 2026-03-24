@@ -167,6 +167,11 @@ public class RegistrarMovi extends javax.swing.JFrame {
         });
 
         cbxProduto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxProdutoActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(rbEntrada);
         rbEntrada.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -282,6 +287,7 @@ public class RegistrarMovi extends javax.swing.JFrame {
     private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
         // verificar se há campos vazio
         if (FormUtils.camposVazios(txtQuantidade)) {
+            JOptionPane.showMessageDialog(this, "Digite uma quantidade!");
             return;
         }
         // verificar se foi escolhido um produto
@@ -292,7 +298,7 @@ public class RegistrarMovi extends javax.swing.JFrame {
 
         try {
             //verificar caracteres corretos
-            int qtd = Integer.parseInt(txtQuantidade.getText());
+            int qtd = Integer.parseInt(txtQuantidade.getText().trim());
             //pega o objeto produto do cbx
             Produto p = (Produto) cbxProduto.getSelectedItem();
 
@@ -405,6 +411,10 @@ public class RegistrarMovi extends javax.swing.JFrame {
             em.close();
         }
     }//GEN-LAST:event_btnSalvarMoviActionPerformed
+
+    private void cbxProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxProdutoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxProdutoActionPerformed
 
     /**
      * @param args the command line arguments

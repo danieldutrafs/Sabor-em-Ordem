@@ -5,37 +5,25 @@
 package br.com.sabor.view;
 
 import br.com.sabor.controller.Navegador;
+import br.com.sabor.dao.ClienteDAO;
+import br.com.sabor.model.Clientes;
+import java.util.List;
 
 /**
  *
  * @author dutra
  */
-public class Clientes extends javax.swing.JFrame {
+public class TelaClientes extends javax.swing.JFrame {
 
     /**
      * Creates new form Clientes
      */
-    public Clientes() {
+    private Long idClienteSelecionado = null;
+
+    public TelaClientes() {
         initComponents();
-        // 1. Limpa o painel para não duplicar se a tela for reaberta
-        painelListaClientes.removeAll();
-
-// 2. Configurações do Layout para o Scroll funcionar
-// O BoxLayout.Y_AXIS empilha os cards um embaixo do outro
-        painelListaClientes.setLayout(new javax.swing.BoxLayout(painelListaClientes, javax.swing.BoxLayout.Y_AXIS));
-
-// Define um tamanho preferencial grande para que o JScrollPane entenda que tem conteúdo para rolar
-        painelListaClientes.setPreferredSize(new java.awt.Dimension(290, 10000));
-        painelListaClientes.setMinimumSize(new java.awt.Dimension(290, 384));
-
-// 3. Adicionando os cards de teste (baseado no seu print)
-        adicionarCardCliente("Serephynna dos Santos", "rua tal 123, tel, Porto Alegre", "51 12233-4455", "2500,00");
-        adicionarCardCliente("Giselisson Soares", "rua tal 123, tel, Porto Alegre", "51 12233-4455", "2500,00");
-        adicionarCardCliente("Claudiano da Silva", "rua tal 123, tel, Porto Alegre", "51 12233-4455", "2500,00");
-
-// 4. "Sacudida" final para atualizar a interface visualmente
-        painelListaClientes.revalidate();
-        painelListaClientes.repaint();
+        carregarCardsDosClientes();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -45,52 +33,63 @@ public class Clientes extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
 
-    private void adicionarCardCliente(String nome, String endereco, String telefone, String totalCompras) {
+    // card cleinte
+    private void adicionarCardCliente(Long id, String nome, String endereco, String telefone) {
         javax.swing.JPanel card = new javax.swing.JPanel();
-        card.setBackground(new java.awt.Color(255, 249, 230)); // Bege claro
-        card.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 153, 0), 1, true)); // Borda dourada fina
-
-        // Configuração de tamanho para o ScrollPane
-        card.setPreferredSize(new java.awt.Dimension(270, 110));
-        card.setMinimumSize(new java.awt.Dimension(270, 110));
-        card.setMaximumSize(new java.awt.Dimension(Short.MAX_VALUE, 110));
+        card.setBackground(new java.awt.Color(255, 249, 230)); // Cor bege padrão
+        card.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 153, 0), 1, true));
+        card.setPreferredSize(new java.awt.Dimension(270, 100));
+        card.setMaximumSize(new java.awt.Dimension(Short.MAX_VALUE, 100));
         card.setLayout(null);
 
-        // Nome do Cliente (Título)
+        //logica de seleção
+        card.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                idClienteSelecionado = id;
+
+                for (java.awt.Component c : painelListaClientes.getComponents()) {
+                    if (c instanceof javax.swing.JPanel) {
+                        c.setBackground(new java.awt.Color(255, 249, 230));
+                    }
+                }
+                card.setBackground(new java.awt.Color(255, 215, 120));
+            }
+        });
+
+        // Labels 
         javax.swing.JLabel lblNome = new javax.swing.JLabel("Cliente: " + nome);
-        lblNome.setFont(new java.awt.Font("Segoe UI", 1, 16));
-        lblNome.setBounds(15, 10, 400, 25);
+        lblNome.setFont(new java.awt.Font("Segoe UI", 1, 15));
+        lblNome.setBounds(15, 10, 240, 25);
         card.add(lblNome);
 
-        // Endereço
         javax.swing.JLabel lblEnd = new javax.swing.JLabel("Endereço: " + endereco);
         lblEnd.setFont(new java.awt.Font("Segoe UI", 0, 13));
-        lblEnd.setForeground(new java.awt.Color(80, 80, 80));
-        lblEnd.setBounds(15, 35, 400, 20);
+        lblEnd.setBounds(15, 35, 240, 20);
         card.add(lblEnd);
 
-        // Telefone
         javax.swing.JLabel lblTel = new javax.swing.JLabel("Telefone: " + telefone);
         lblTel.setFont(new java.awt.Font("Segoe UI", 0, 13));
-        lblTel.setForeground(new java.awt.Color(80, 80, 80));
-        lblTel.setBounds(15, 55, 400, 20);
+        lblTel.setBounds(15, 55, 240, 20);
         card.add(lblTel);
 
-        // Total em Compras (Destaque)
-        javax.swing.JLabel lblTotal = new javax.swing.JLabel("Total em Compras: R$ " + totalCompras);
-        lblTotal.setFont(new java.awt.Font("Segoe UI", 1, 13));
-        lblTotal.setForeground(new java.awt.Color(100, 100, 100));
-        lblTotal.setBounds(15, 75, 400, 20);
-        card.add(lblTotal);
-
-        // Adição ao painel que está dentro do ScrollPane
-        // Certifique-se de que o nome do seu painel de clientes seja 'painelListaClientes'
         painelListaClientes.add(card);
-
-        // Espaçamento entre um card e outro
         painelListaClientes.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
+    }
 
-        // Atualiza a interface
+    // carregar dados 
+    public void carregarCardsDosClientes() {
+        painelListaClientes.removeAll();
+        try {
+            br.com.sabor.dao.ClienteDAO dao = new br.com.sabor.dao.ClienteDAO();
+            List<br.com.sabor.model.Clientes> lista = dao.listarTodos();
+
+            for (br.com.sabor.model.Clientes c : lista) {
+                adicionarCardCliente(c.getId(), c.getNomeCliente(), c.getEndereco(), c.getTelefone());
+            }
+        } catch (Exception e) {
+            System.out.println("Erro: " + e.getMessage());
+        }
         painelListaClientes.revalidate();
         painelListaClientes.repaint();
     }
@@ -107,10 +106,11 @@ public class Clientes extends javax.swing.JFrame {
         btnEncomendaC = new javax.swing.JButton();
         btnRelatoriosC = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        txtBuscarProduto = new javax.swing.JTextField();
+        txtBuscar = new javax.swing.JTextField();
         btnEditar = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         painelListaClientes = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -223,17 +223,21 @@ public class Clientes extends javax.swing.JFrame {
                 .addComponent(btnClientesC)
                 .addGap(18, 18, 18)
                 .addComponent(btnRelatoriosC)
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 28)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Registro de clientes");
 
-        txtBuscarProduto.setBackground(new java.awt.Color(255, 255, 255));
-        txtBuscarProduto.setForeground(new java.awt.Color(0, 0, 0));
-        txtBuscarProduto.setText("Buscar Cliente");
-        txtBuscarProduto.setOpaque(true);
+        txtBuscar.setBackground(new java.awt.Color(255, 255, 255));
+        txtBuscar.setForeground(new java.awt.Color(0, 0, 0));
+        txtBuscar.setOpaque(true);
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyReleased(evt);
+            }
+        });
 
         btnEditar.setBackground(new java.awt.Color(255, 153, 153));
         btnEditar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -245,10 +249,15 @@ public class Clientes extends javax.swing.JFrame {
             }
         });
 
+        jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
         painelListaClientes.setBackground(new java.awt.Color(204, 204, 204));
         painelListaClientes.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(191, 160, 93), 2));
         painelListaClientes.setLayout(new javax.swing.BoxLayout(painelListaClientes, javax.swing.BoxLayout.Y_AXIS));
         jScrollPane2.setViewportView(painelListaClientes);
+
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Buscar cliente por nome:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -256,27 +265,34 @@ public class Clientes extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(txtBuscarProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(4, 4, 4)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)))
                 .addContainerGap(71, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLayeredPane1)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
+                .addGap(15, 15, 15)
                 .addComponent(jLabel1)
-                .addGap(12, 12, 12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addGap(4, 4, 4)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtBuscarProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addComponent(btnEditar)))
@@ -311,17 +327,63 @@ public class Clientes extends javax.swing.JFrame {
     }//GEN-LAST:event_btnClientesCActionPerformed
 
     private void btnEncomendaCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEncomendaCActionPerformed
-        Navegador.navegar(this, new Encomendas());
+        Navegador.navegar(this, new TelaEncomendas(null));
     }//GEN-LAST:event_btnEncomendaCActionPerformed
 
     private void btnRelatoriosCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatoriosCActionPerformed
-         Navegador.navegar(this, new Relatorio());
+        Navegador.navegar(this, new Relatorio());
     }//GEN-LAST:event_btnRelatoriosCActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-       EditarCliente ec = new EditarCliente();
-       ec.setVisible(true);
+        if (idClienteSelecionado == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecione um cliente primeiro!");
+            return;
+        }
+
+        try {
+            br.com.sabor.dao.ClienteDAO dao = new br.com.sabor.dao.ClienteDAO();
+            br.com.sabor.model.Clientes clienteSelecionado = dao.buscarPorId(idClienteSelecionado);
+
+            // cria a tela de edição
+            EditarCliente telaEdit = new EditarCliente();
+
+            // preenche os campos dela
+            telaEdit.preencherCamposParaEdicao(clienteSelecionado);
+
+            telaEdit.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    carregarCardsDosClientes();
+                }
+            });
+            telaEdit.setVisible(true);
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage());
+        }
     }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
+        // 1. Limpa o painel antes de mostrar os novos resultados
+        painelListaClientes.removeAll();
+
+        try {
+            // 2. Instancia o DAO e busca pelo nome digitado
+            br.com.sabor.dao.ClienteDAO dao = new br.com.sabor.dao.ClienteDAO();
+            List<br.com.sabor.model.Clientes> lista = dao.buscarPorNome(txtBuscar.getText());
+
+            // 3. Usa o SEU método para criar os cards na tela
+            for (br.com.sabor.model.Clientes c : lista) {
+                adicionarCardCliente(c.getId(), c.getNomeCliente(), c.getEndereco(), c.getTelefone());
+            }
+
+        } catch (Exception e) {
+            System.err.println("Erro na busca: " + e.getMessage());
+        }
+
+        // 4. Avisa o Java para redesenhar a tela com os novos cards
+        painelListaClientes.revalidate();
+        painelListaClientes.repaint();
+    }//GEN-LAST:event_txtBuscarKeyReleased
 
     /**
      * @param args the command line arguments
@@ -340,20 +402,21 @@ public class Clientes extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Clientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Clientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Clientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Clientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TelaClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Clientes().setVisible(true);
+                new TelaClientes().setVisible(true);
             }
         });
     }
@@ -367,11 +430,12 @@ public class Clientes extends javax.swing.JFrame {
     private javax.swing.JButton btnTelaIniciaC1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel painelListaClientes;
-    private javax.swing.JTextField txtBuscarProduto;
+    private javax.swing.JTextField txtBuscar;
     // End of variables declaration//GEN-END:variables
 }

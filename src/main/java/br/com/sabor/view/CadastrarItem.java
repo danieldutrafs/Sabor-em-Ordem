@@ -9,6 +9,7 @@ import br.com.sabor.model.Categoria;
 import br.com.sabor.model.Produto;
 import javax.swing.JOptionPane;
 import br.com.sabor.controller.FormUtils;
+import br.com.sabor.view.TelaEstoque;
 
 /**
  *
@@ -16,10 +17,13 @@ import br.com.sabor.controller.FormUtils;
  */
 public class CadastrarItem extends javax.swing.JFrame {
 
+    
+
     /**
      * Creates new form CadastrarItem
      */
     public CadastrarItem() {
+
         initComponents();
     }
 
@@ -243,11 +247,11 @@ public class CadastrarItem extends javax.swing.JFrame {
 
     private void btnSalvarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarItemActionPerformed
 
-        try{ // verificação d campo vazio
-        
+        try { // verificação d campo vazio
+
             if (FormUtils.camposVazios(txtNome, txtQuantidade, txtValor, txtCategoria)) {
                 JOptionPane.showMessageDialog(this, "Atenção: Preencha todos os campos!");
-                return; 
+                return;
             }
 
             // Pegamos os dados 
@@ -276,6 +280,13 @@ public class CadastrarItem extends javax.swing.JFrame {
 
             // Limpeza dos campos
             FormUtils.limparCampos(txtNome, txtQuantidade, txtValor, txtCategoria);
+            
+            //atualizar tabela
+            for (java.awt.Frame f : java.awt.Frame.getFrames()) {
+                if (f instanceof TelaEstoque) {
+                    ((TelaEstoque) f).atualizarTabela(); 
+                }
+            }
 
         } catch (NumberFormatException e) {
             // erro de digitação
@@ -283,12 +294,12 @@ public class CadastrarItem extends javax.swing.JFrame {
         } catch (Exception e) {
             // falha no banco 
             JOptionPane.showMessageDialog(this, "Erro ao salvar no banco: " + e.getMessage());
-        }    
+        }
     }//GEN-LAST:event_btnSalvarItemActionPerformed
 
     /**
-         * @param args the command line arguments
-         */
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

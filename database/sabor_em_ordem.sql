@@ -34,6 +34,7 @@ CREATE TABLE encomenda (
     endereco VARCHAR(255) NOT NULL,
     is_retirada BOOLEAN NOT NULL,
     forma_pagamento VARCHAR(255) NOT NULL,
+    valor_total DECIMAL (10,2),
     CONSTRAINT fk_cliente_encomenda FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
 

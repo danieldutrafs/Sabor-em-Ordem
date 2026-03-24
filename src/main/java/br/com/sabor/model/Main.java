@@ -4,8 +4,11 @@
  */
 package br.com.sabor.model;
 
+import br.com.sabor.view.TelaInicial;
+
 public class Main {
     public static void main(String[] args) {
-      System.out.println("Sistema Sabor em Ordem iniciado.");
+      TelaInicial tl = new TelaInicial();
+      tl.setVisible(true);
     }
 }
