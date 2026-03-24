@@ -3,7 +3,7 @@
 > **Status do Projeto:**  Em Desenvolvimento
 
 ## 📝 Objetivo do Software
-O **Sabor & Gestão** nasceu de uma necessidade real: **ajudar minha mãe na gestão do seu negócio de salgados de festa.** O objetivo é profissionalizar o controle das encomendas dela, substituindo os cadernos de anotações por um sistema digital que organiza os pedidos, calcula o faturamento automático e garante que nenhuma entrega de centos de salgados seja esquecida.
+O **Sabor em Ordem** nasceu de uma necessidade real: **ajudar minha mãe na gestão do seu negócio de salgados de festa.** O objetivo é profissionalizar o controle das encomendas dela, substituindo os cadernos de anotações por um sistema digital que organiza os pedidos, calcula o faturamento automático e garante que nenhuma entrega de centos de salgados seja esquecida.
 
 ## 🚀 Tecnologias Aplicadas
 As tecnologias utilizadas refletem o aprendizado em desenvolvimento Java Desktop:
